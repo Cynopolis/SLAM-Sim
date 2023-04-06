@@ -6,20 +6,25 @@ import static processing.core.PApplet.radians;
 import processing.core.PVector;
 import processing.core.PApplet;
 
-public class Car extends PApplet{
+public class Car{
     PVector pose = new PVector(0,0); // the car's x, y position
     float angle = 0; // the current angle that the car is at.
     int carLength = 50;
     int carWidth = 40;
-    SLAM slam = new SLAM();
+    SLAM slam;
+    private static PApplet proc;
 
-    ArrayList<View> views = new ArrayList<View>();
-    ArrayList<PVector> points = new ArrayList<PVector>();
+    ArrayList<View> views = new ArrayList<>();
 
     // default constructor
-    Car(){}
+    Car(PApplet processing){
+        this.proc = processing;
+        slam = new SLAM(proc);
+    }
 
-    Car(int xPos, int yPos, int carLength, int carWidth){
+    Car(PApplet processing, int xPos, int yPos, int carLength, int carWidth){
+        this.proc = processing;
+        slam = new SLAM(proc);
         this.pose = new PVector(xPos, yPos);
         this.carLength = carLength;
         this.carWidth = carWidth;
@@ -27,17 +32,17 @@ public class Car extends PApplet{
 
     //adds a new view with the specified FOV and ray number
     public void addView(float FOV, int numberOfRays){
-        views.add(new View(pose, numberOfRays, radians(FOV)));
+        views.add(new View(proc, pose, numberOfRays, radians(FOV)));
     }
 
     //draw the car and its views
     public void drawCar(ArrayList<Wall> walls){
-        stroke(255);
-        ellipse(pose.x, pose.y, carWidth, carLength);
+        proc.stroke(255);
+        proc.ellipse(pose.x, pose.y, carWidth, carLength);
         this.updateScan(walls);
     }
 
-    //With all of the views that the car has, get their point list
+    //With all the views that the car has, get their point list
     void updateScan(ArrayList<Wall> walls){
         for(View view : views){
             view.look(walls);
@@ -68,7 +73,6 @@ public class Car extends PApplet{
         for(View view : views){
             view.setAngle(angle);
         }
-        return;
     }
 
     public void setPose(PVector newPose){

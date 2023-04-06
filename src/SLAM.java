@@ -4,14 +4,16 @@ import java.util.ArrayList;
 
 import static processing.core.PApplet.pow;
 
-public class SLAM extends PApplet{
+public class SLAM{
     ArrayList<PVector> points = new ArrayList<PVector>();
+    private static PApplet proc;
 
-    SLAM(){
+    SLAM(PApplet processing){
+        proc = processing;
     }
 
     public void addPoints(ArrayList<PVector> newPoints){
-        Line line = new Line(newPoints);
+        Line line = new Line(proc, newPoints);
     }
 
 }
@@ -19,19 +21,24 @@ public class SLAM extends PApplet{
 class Line{
     PVector direction = new PVector(0,0);
     PVector position = new PVector(0,0);
+    private static PApplet proc;
 
-    Line(){}
-    Line(PVector direction, PVector position){
+    Line(PApplet processing){
+        proc = processing;
+    }
+    Line(PApplet processing, PVector direction, PVector position){
         this.direction = direction;
         this.position = position;
+        proc = processing;
     }
 
     /**
      * @brief attempt to find the line of best fit for the given points
      * @param points the points to get the line of best for
      */
-    Line(ArrayList<PVector> points){
+    Line(PApplet processing, ArrayList<PVector> points){
         bestFit(points);
+        proc = processing;
     }
 
     // least squares line of best fit algorithm

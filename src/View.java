@@ -4,14 +4,16 @@ import java.util.Objects;
 
 import static processing.core.PApplet.*;
 
-public class View extends PApplet{
+public class View{
     PVector pose;
     float angle = 0;
     float FOV;
-    ArrayList<Ray> rays = new ArrayList<Ray>();
+    ArrayList<Ray> rays = new ArrayList<>();
+    private static PApplet proc;
 
     //the x,y position of the view, what angle it's looking at and its FOV
-    View(PVector newPose, int numberOfRays, float FOV){
+    View(PApplet processing, PVector newPose, int numberOfRays, float FOV){
+        proc = processing;
         this.pose = newPose;
         this.FOV = FOV;
         this.setRayNum(numberOfRays, FOV, this.angle);
@@ -23,7 +25,7 @@ public class View extends PApplet{
         rays.clear();
         float angle = (float) (0.01-angleOffset); //the 0.01 fixes some bugs
         for(int i = 0; i < numberOfRays; i++){
-            Ray ray = new Ray(pose, 100000, angle);
+            Ray ray = new Ray(proc, pose, 100000, angle);
             angle = angle + rayStep;
             rays.add(ray);
         }
@@ -77,14 +79,16 @@ public class View extends PApplet{
     }
 }
 
-class Ray extends PApplet{
+class Ray{
     PVector pose;
     int rayLength;
     int defaultRayLength;
     float angle; // IN RADIANS
+    private static PApplet proc;
 
     //takes the starting position of the ray, the length of the ray, and it's casting angle (radians)
-    Ray(PVector position, int defaultRayLength, float angle){
+    Ray(PApplet processing, PVector position, int defaultRayLength, float angle){
+        proc = processing;
         this.pose = position;
         this.defaultRayLength = defaultRayLength;
         this.rayLength = defaultRayLength;
@@ -92,7 +96,7 @@ class Ray extends PApplet{
     }
 
     public void drawRay(){
-        line(pose.x, pose.y, (pose.x + cos(angle)*rayLength), (pose.y + sin(angle)*rayLength));
+        proc.line(pose.x, pose.y, (pose.x + cos(angle)*rayLength), (pose.y + sin(angle)*rayLength));
     }
 
     //checks to see at what coordinate the ray will collide with an object and sets the ray length to meet that point.
