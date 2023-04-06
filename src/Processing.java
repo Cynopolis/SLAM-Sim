@@ -6,7 +6,7 @@ import java.util.ArrayList;
 public class Processing extends PApplet {
 
     Car car;
-    ArrayList<Wall> objects = new ArrayList<Wall>();
+    ArrayList<Wall> objects = new ArrayList<>();
 
     public static PApplet processing;
 

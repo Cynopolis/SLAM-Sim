@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import static processing.core.PApplet.pow;
 
 public class SLAM{
-    ArrayList<PVector> points = new ArrayList<PVector>();
+    ArrayList<PVector> points = new ArrayList<>();
     private static PApplet proc;
 
     SLAM(PApplet processing){
@@ -33,7 +33,7 @@ class Line{
     }
 
     /**
-     * @brief attempt to find the line of best fit for the given points
+     * attempt to find the line of best fit for the given points
      * @param points the points to get the line of best for
      */
     Line(PApplet processing, ArrayList<PVector> points){

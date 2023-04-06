@@ -18,12 +18,12 @@ public class Car{
 
     // default constructor
     Car(PApplet processing){
-        this.proc = processing;
+        proc = processing;
         slam = new SLAM(proc);
     }
 
     Car(PApplet processing, int xPos, int yPos, int carLength, int carWidth){
-        this.proc = processing;
+        proc = processing;
         slam = new SLAM(proc);
         this.pose = new PVector(xPos, yPos);
         this.carLength = carLength;

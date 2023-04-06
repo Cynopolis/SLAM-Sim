@@ -67,7 +67,7 @@ public class View{
 
     //gets the point that each ray has collided with
     public ArrayList<PVector> getPoints(){
-        ArrayList<PVector> points = new ArrayList<PVector>();
+        ArrayList<PVector> points = new ArrayList<>();
 
         for(Ray ray : rays){
             if(!Objects.equals(ray.getPoint(), new PVector(0, 0) {
@@ -102,7 +102,7 @@ class Ray{
     //checks to see at what coordinate the ray will collide with an object and sets the ray length to meet that point.
     public void castRay(ArrayList<Wall> objects){
         this.rayLength = defaultRayLength;
-        ArrayList<Integer> distances = new ArrayList<Integer>();
+        ArrayList<Integer> distances = new ArrayList<>();
         //sees what objects it collides with
         for(Wall object : objects){
             float theta1 = angle;
@@ -141,8 +141,7 @@ class Ray{
     public float getAngle(){return this.angle;}
 
     public boolean hasCollided(){
-        if(this.defaultRayLength != this.rayLength){return true;}
-        else{return false;}
+        return this.defaultRayLength != this.rayLength;
     }
 
     //returns the absolute position of the point
