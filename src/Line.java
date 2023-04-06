@@ -5,8 +5,8 @@ import java.util.List;
 import static processing.core.PApplet.*;
 
 public class Line{
-    private Vector direction = new Vector(0,0);
-    private Vector position = new Vector(0,0);
+    protected Vector direction = new Vector(0,0);
+    protected Vector position = new Vector(0,0);
 
     Line(Vector startPosition, Vector endPosition){
         direction = endPosition.sub(startPosition);
