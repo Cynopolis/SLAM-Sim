@@ -47,7 +47,7 @@ public class SLAM{
      */
     private void extractFeature(ArrayList<Vector> originalList, List<Vector> randomSample, float maxRange, int consensus){
         // get a line of best fit for this list.
-        Line bestFit = new Line(proc, randomSample);
+        Line bestFit = new Line(randomSample);
         int count = 0;
         ArrayList<Vector> newRandomSample = new ArrayList<>();
         for (Vector v : randomSample) {
@@ -58,7 +58,7 @@ public class SLAM{
         }
         // if the count is above the consensus, add the line to our list and remove the points that gave the consensus.
         if (count >= consensus) {
-            bestFit = new Line(proc, newRandomSample.subList(0, newRandomSample.size() - 1));
+            bestFit = new Line(newRandomSample.subList(0, newRandomSample.size() - 1));
             lines.add(bestFit);
             // remove the associated readings from the total available readings.
             for (Vector v : newRandomSample) {
@@ -101,7 +101,7 @@ public class SLAM{
 
     public void drawLines(){
         for(Line line : lines){
-            line.draw();
+            line.draw(proc);
         }
     }
 
