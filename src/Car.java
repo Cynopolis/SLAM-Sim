@@ -3,11 +3,10 @@ import java.util.ArrayList;
 import static java.lang.Math.PI;
 import static processing.core.PApplet.degrees;
 import static processing.core.PApplet.radians;
-import processing.core.PVector;
 import processing.core.PApplet;
 
 public class Car{
-    PVector pose = new PVector(0,0); // the car's x, y position
+    Vector pose = new Vector(0,0); // the car's x, y position
     float angle = 0; // the current angle that the car is at.
     int carLength = 50;
     int carWidth = 40;
@@ -25,7 +24,7 @@ public class Car{
     Car(PApplet processing, int xPos, int yPos, int carLength, int carWidth){
         proc = processing;
         slam = new SLAM(proc);
-        this.pose = new PVector(xPos, yPos);
+        this.pose = new Vector(xPos, yPos);
         this.carLength = carLength;
         this.carWidth = carWidth;
     }
@@ -40,6 +39,7 @@ public class Car{
         proc.stroke(255);
         proc.ellipse(pose.x, pose.y, carWidth, carLength);
         this.updateScan(walls);
+        this.slam.drawLines();
     }
 
     //With all the views that the car has, get their point list
@@ -49,12 +49,12 @@ public class Car{
         }
 
         for(View view : views){
-            ArrayList<PVector> pointList = view.getPoints();
+            ArrayList<Vector> pointList = view.getPoints();
             slam.RANSAC(pointList, view.getFOV() / view.getRayNum());
         }
     }
 
-    public PVector getPose(){
+    public Vector getPose(){
         return pose;
     }
 
@@ -75,7 +75,7 @@ public class Car{
         }
     }
 
-    public void setPose(PVector newPose){
+    public void setPose(Vector newPose){
         pose = newPose;
         for(View view : views){
             view.setPos(pose);

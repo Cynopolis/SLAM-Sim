@@ -1,11 +1,10 @@
-import static processing.core.PApplet.radians;
 import processing.core.*;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import static processing.core.PApplet.pow;
+import static processing.core.PApplet.*;
 
 public class SLAM{
     ArrayList<Line> lines = new ArrayList<>();
@@ -21,15 +20,18 @@ public class SLAM{
      * @param subSampleSize the size of the sub sample
      * @return A random subset of the set within an indexRange and of size: subSampleSize
      */
-    private List<PVector> randomSample(ArrayList<PVector> set, int indexRange, int subSampleSize){
+    private List<Vector> randomSample(ArrayList<Vector> set, int indexRange, int subSampleSize){
         // select a random laser data reading
         int randomIdx = (int) proc.random(set.size() - 1); // index of starter reading
-        PVector point = set.get(randomIdx); // point of starter reading
+        Vector point = set.get(randomIdx); // point of starter reading
 
         // get a random sample of size numSampleReadings within degreeRange degrees of this laser reading.
-        List<PVector> subSample = set.subList(randomIdx - indexRange, randomIdx + indexRange); // get the sub-sample
+        List<Vector> subSample;
+        int rangeStart = randomIdx - indexRange >= 0 ? randomIdx - indexRange : 0;
+        int rangeEnd = randomIdx + indexRange < set.size() ? randomIdx + indexRange : set.size()-1;
+        subSample = set.subList(rangeStart, rangeEnd); // get the sub-sample
         Collections.shuffle(subSample); // shuffle the list
-        List<PVector> randomSample = subSample.subList(0, subSampleSize); // get our random sample
+        List<Vector> randomSample = subSample.subList(0, rangeEnd-rangeStart); // get our random sample
         if (!randomSample.contains(point)) {
             randomSample.add(point);
         }
@@ -43,12 +45,12 @@ public class SLAM{
      * @param maxRange the maximum distance away from the line of best fit of the subSample of points for a given point's consensus to count.
      * @param consensus the number of points that have to give their consensus for the line of best fit to count as a valid feature.
      */
-    private void extractFeature(ArrayList<PVector> originalList, List<PVector> randomSample, float maxRange, int consensus){
+    private void extractFeature(ArrayList<Vector> originalList, List<Vector> randomSample, float maxRange, int consensus){
         // get a line of best fit for this list.
         Line bestFit = new Line(proc, randomSample);
         int count = 0;
-        ArrayList<PVector> newRandomSample = new ArrayList<>();
-        for (PVector v : randomSample) {
+        ArrayList<Vector> newRandomSample = new ArrayList<>();
+        for (Vector v : randomSample) {
             if (bestFit.getDistance(v) <= maxRange) {
                 count++;
                 newRandomSample.add(v);
@@ -59,12 +61,17 @@ public class SLAM{
             bestFit = new Line(proc, newRandomSample.subList(0, newRandomSample.size() - 1));
             lines.add(bestFit);
             // remove the associated readings from the total available readings.
-            for (PVector v : newRandomSample) {
+            for (Vector v : newRandomSample) {
                 originalList.remove(v);
             }
         }
     }
-    public void RANSAC(ArrayList<PVector> newPoints, float raysPerDegree){
+
+    /**
+     * @param newPoints a new scan of points to perform feature detection on
+     * @param raysPerDegree How many degrees apart are each ray that was cast
+     */
+    public void RANSAC(ArrayList<Vector> newPoints, float raysPerDegree){
         float degreeRange = radians(10/2); // range to randomly sample readings within
         int indexRange = (int) (degreeRange / raysPerDegree);
         int numSampleReadings = 10; // number of readings to randomly sample
@@ -83,7 +90,7 @@ public class SLAM{
             }
 
             // get a random sub sample of newPoints within the index range of a given size
-            List<PVector> randomSample = this.randomSample(newPoints, indexRange, numSampleReadings);
+            List<Vector> randomSample = this.randomSample(newPoints, indexRange, numSampleReadings);
 
             // check if the sub sample forms a valid line and remove the randomSample points if it does.
             extractFeature(newPoints, randomSample, maxRange, consensus);
@@ -92,71 +99,10 @@ public class SLAM{
 
     }
 
-}
-
-class Line{
-    PVector direction = new PVector(0,0);
-    PVector position = new PVector(0,0);
-    private static PApplet proc;
-
-    Line(PApplet processing){
-        proc = processing;
-    }
-    Line(PApplet processing, PVector direction, PVector position){
-        this.direction = direction;
-        this.position = position;
-        proc = processing;
-    }
-
-    /**
-     * attempt to find the line of best fit for the given points
-     * @param points the points to get the line of best for
-     */
-    Line(PApplet processing, List<PVector> points){
-        bestFit(points);
-        proc = processing;
-    }
-
-    // least squares line of best fit algorithm
-    private void bestFit(List<PVector> points){
-        // get the mean of all the points
-        PVector mean = new PVector();
-        for(PVector point : points){
-            mean.add(point);
+    public void drawLines(){
+        for(Line line : lines){
+            line.draw();
         }
-        mean.div(points.size());
-
-        // this section calculates the direction vector of the line of best fit
-        PVector direction = new PVector();
-        // get the rise and run of the line of best fit
-        for(PVector point : points){
-            direction.y += (point.x - mean.x)*(point.y - mean.y); // rise
-            direction.x += pow((point.x - mean.x),2);
-        }
-
-        this.position = mean;
-        this.direction = direction;
     }
 
-    public PVector getSlopeIntForm(){
-        float slope = direction.y / direction.x;
-        float intercept = position.y - slope * position.x;
-        return new PVector(slope, intercept);
-    }
-
-    public PVector getDirection(){
-        return direction;
-    }
-
-    public PVector getPosition(){
-        return position;
-    }
-
-    /**
-     * @param point
-     * @return the smallest distance from the point to this line
-     */
-    public float getDistance(PVector point){
-        return (point.sub(position).cross(direction)).mag() / direction.mag();
-    }
 }

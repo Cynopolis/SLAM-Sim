@@ -5,14 +5,14 @@ import java.util.Objects;
 import static processing.core.PApplet.*;
 
 public class View{
-    PVector pose;
+    Vector pose;
     float angle = 0;
     float FOV;
     ArrayList<Ray> rays = new ArrayList<>();
     private static PApplet proc;
 
     //the x,y position of the view, what angle it's looking at and its FOV
-    View(PApplet processing, PVector newPose, int numberOfRays, float FOV){
+    View(PApplet processing, Vector newPose, int numberOfRays, float FOV){
         proc = processing;
         this.pose = newPose;
         this.FOV = FOV;
@@ -23,7 +23,7 @@ public class View{
     public void setRayNum(int numberOfRays, float FOV, float angleOffset){
         float rayStep = FOV/numberOfRays;
         rays.clear();
-        float angle = (float) (0.01-angleOffset); //the 0.01 fixes some bugs
+        float angle =  (float)(0.01-angleOffset); //the 0.01 fixes some bugs
         for(int i = 0; i < numberOfRays; i++){
             Ray ray = new Ray(proc, pose, 100000, angle);
             angle = angle + rayStep;
@@ -40,7 +40,7 @@ public class View{
     }
 
     //changes the position of the view
-    public void setPos(PVector newPose){
+    public void setPos(Vector newPose){
         pose = newPose;
         for(Ray ray : rays){ray.setPos(pose);}
     }
@@ -57,7 +57,7 @@ public class View{
         this.setRayNum(this.rays.size(), this.FOV, this.angle);
     }
 
-    public PVector getPos(){return pose;}
+    public Vector getPos(){return pose;}
 
     public float getAngle(){return this.angle;}
 
@@ -66,11 +66,11 @@ public class View{
     public int getRayNum(){return this.rays.size();}
 
     //gets the point that each ray has collided with
-    public ArrayList<PVector> getPoints(){
-        ArrayList<PVector> points = new ArrayList<>();
+    public ArrayList<Vector> getPoints(){
+        ArrayList<Vector> points = new ArrayList<>();
 
         for(Ray ray : rays){
-            if(!Objects.equals(ray.getPoint(), new PVector(0, 0) {
+            if(!Objects.equals(ray.getPoint(), new Vector(0, 0) {
             })){
                 points.add(ray.getPoint());
             }
@@ -80,14 +80,14 @@ public class View{
 }
 
 class Ray{
-    PVector pose;
+    Vector pose;
     int rayLength;
     int defaultRayLength;
     float angle; // IN RADIANS
     private static PApplet proc;
 
     //takes the starting position of the ray, the length of the ray, and it's casting angle (radians)
-    Ray(PApplet processing, PVector position, int defaultRayLength, float angle){
+    Ray(PApplet processing, Vector position, int defaultRayLength, float angle){
         proc = processing;
         this.pose = position;
         this.defaultRayLength = defaultRayLength;
@@ -107,7 +107,7 @@ class Ray{
         for(Wall object : objects){
             float theta1 = angle;
             float theta2 = radians(object.getAngle());
-            PVector wallPos = object.getPos();
+            Vector wallPos = object.getPos();
 
             //finds where along the wall the ray collides
             float b = (pose.x*sin(theta1) + wallPos.y*cos(theta1) - pose.y*cos(theta1) - wallPos.x*sin(theta1)) / (cos(theta2)*sin(theta1) - sin(theta2)*cos(theta1));
@@ -134,7 +134,7 @@ class Ray{
         else this.rayLength = defaultRayLength;
     }
 
-    public PVector getPos(){ return pose;}
+    public Vector getPos(){ return pose;}
 
     public int getRayLength(){return this.rayLength;}
 
@@ -145,16 +145,16 @@ class Ray{
     }
 
     //returns the absolute position of the point
-    public PVector getPoint(){
+    public Vector getPoint(){
         if(this.rayLength != this.defaultRayLength){
-            return new PVector(rayLength * (int)cos(this.angle) + pose.x, rayLength * (int)sin(this.angle) + pose.y);
+            return new Vector(rayLength * (int)cos(this.angle) + pose.x, rayLength * (int)sin(this.angle) + pose.y);
         }
         else{
-            return new PVector(0,0);
+            return new Vector(0,0);
         }
     }
 
-    public void setPos(PVector newPose){
+    public void setPos(Vector newPose){
         pose = newPose;
     }
 

@@ -3,7 +3,7 @@ import processing.core.*;
 import static processing.core.PApplet.*;
 
 public class Wall{
-    PVector pos;
+    Vector pos;
     float angle;
     int wallLength;
     private static PApplet proc;
@@ -11,7 +11,7 @@ public class Wall{
     int g;
     int b;
 
-    Wall(PApplet processing, PVector pos, float angle, int wallLength){
+    Wall(PApplet processing, Vector pos, float angle, int wallLength){
         proc = processing;
         this.pos = pos;
         this.angle = angle;
@@ -27,7 +27,7 @@ public class Wall{
         //ellipse((xPos + cos(radians(angle))*wallLength), (yPos + sin(radians(angle))*wallLength), 20, 20);
     }
 
-    PVector getPos(){
+    Vector getPos(){
         return pos;
     }
 

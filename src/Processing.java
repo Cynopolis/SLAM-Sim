@@ -1,5 +1,4 @@
 import processing.core.PApplet;
-import processing.core.PVector;
 
 import java.util.ArrayList;
 
@@ -20,15 +19,15 @@ public class Processing extends PApplet {
         size(1000, 1000);
         car.addView(180,180);
         for(int i = 0; i < 20; i++){
-            Wall wall = new Wall(processing, new PVector((int)random(40, 1840), (int)random(40, 960)), (int)random(360), (int)random(100, 1000));
+            Wall wall = new Wall(processing, new Vector((int)random(40, 1840), (int)random(40, 960)), (int)random(360), (int)random(100, 1000));
             objects.add(wall);
         }
     }
     public void draw(){
         background(0);
-        for(Wall object : objects){
-            object.drawWall();
-        }
+//        for(Wall object : objects){
+//            object.drawWall();
+//        }
         car.drawCar(objects);
         //car.drive(new int[] {0, 0});
     }
