@@ -4,7 +4,7 @@ import java.util.Objects;
 
 import static processing.core.PApplet.*;
 
-public class View{
+public class View extends PApplet{
     PVector pose;
     float angle = 0;
     float FOV;
@@ -77,7 +77,7 @@ public class View{
     }
 }
 
-class Ray{
+class Ray extends PApplet{
     PVector pose;
     int rayLength;
     int defaultRayLength;

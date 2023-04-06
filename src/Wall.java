@@ -2,7 +2,7 @@ import processing.core.*;
 
 import static processing.core.PApplet.*;
 
-public class Wall{
+public class Wall extends PApplet{
     PVector pos;
     float angle;
     int wallLength;

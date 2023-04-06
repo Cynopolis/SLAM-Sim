@@ -1,11 +1,12 @@
-import processing.core.*;
 import java.util.ArrayList;
 
 import static java.lang.Math.PI;
 import static processing.core.PApplet.degrees;
 import static processing.core.PApplet.radians;
+import processing.core.PVector;
+import processing.core.PApplet;
 
-public class Car{
+public class Car extends PApplet{
     PVector pose = new PVector(0,0); // the car's x, y position
     float angle = 0; // the current angle that the car is at.
     int carLength = 50;

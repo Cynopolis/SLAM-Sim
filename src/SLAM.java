@@ -2,7 +2,9 @@ import processing.core.*;
 
 import java.util.ArrayList;
 
-public class SLAM{
+import static processing.core.PApplet.pow;
+
+public class SLAM extends PApplet{
     ArrayList<PVector> points = new ArrayList<PVector>();
 
     SLAM(){
@@ -39,7 +41,7 @@ class Line{
         for(PVector point : points){
             mean.add(point);
         }
-        mean.div(points.size())
+        mean.div(points.size());
 
         // this section calculates the direction vector of the line of best fit
         PVector direction = new PVector();
@@ -50,7 +52,7 @@ class Line{
         }
 
         this.position = mean;
-        this.direction = direciton;
+        this.direction = direction;
     }
 
     public PVector getSlopeIntForm(){
