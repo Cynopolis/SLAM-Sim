@@ -94,4 +94,20 @@ class VectorTest{
         assertFloatEquals(v1.angleDiff(v2.mul(100)), (float) toRadians(90));
     }
 
+    @Test
+    public void testNormalize(){
+        Vector v1 = new Vector(0, 10);
+        assertFloatEquals(0, v1.normalize().x);
+        assertFloatEquals(1, v1.normalize().y);
+
+        Vector v2 = new Vector(3, 0);
+        assertFloatEquals(1, v2.normalize().x);
+        assertFloatEquals(0, v2.normalize().y);
+
+        Vector v3 = new Vector(-1, 0);
+        assertFloatEquals(-1, v3.normalize().x);
+        assertFloatEquals(0, v3.normalize().y);
+
+    }
+
 }

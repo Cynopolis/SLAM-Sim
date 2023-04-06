@@ -34,9 +34,9 @@ public class Line{
         // get the mean of all the points
         Vector mean = new Vector();
         for(Vector point : points){
-            mean.add(point);
+            mean = mean.add(point);
         }
-        mean.div(points.size());
+        mean = mean.div(points.size());
 
         // this section calculates the direction vector of the line of best fit
         Vector direction = new Vector();
@@ -59,8 +59,8 @@ public class Line{
         else{
             this.direction = new Vector(1, direction.y/direction.x);
         }
-        this.position = mean.sub(direction.div(direction.mag()).mul(this.length / 2));
-        this.direction = direction.normalize();
+        this.direction = this.direction.normalize().mul(length);
+        this.position = mean.sub(this.direction.div(2));
     }
 
     public Vector getSlopeIntForm(){
