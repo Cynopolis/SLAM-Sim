@@ -7,18 +7,10 @@ import static processing.core.PApplet.*;
 public class Line{
     private Vector direction = new Vector(0,0);
     private Vector position = new Vector(0,0);
-    private float length = 0;
 
     Line(Vector startPosition, Vector endPosition){
         direction = endPosition.sub(startPosition);
         position = startPosition;
-        length = direction.mag();
-        direction = direction.normalize();
-    }
-    Line(Vector direction, Vector position, float lineLength){
-        this.direction = direction.normalize();
-        this.position = position;
-        this.length = lineLength;
     }
 
     /**
@@ -40,7 +32,7 @@ public class Line{
 
         // this section calculates the direction vector of the line of best fit
         Vector direction = new Vector();
-
+        float length = 1;
         // get the rise and run of the line of best fit
         for(Vector point : points){
             direction.y += (point.x - mean.x)*(point.y - mean.y); // rise
@@ -48,8 +40,8 @@ public class Line{
 
             // find the point that's furthest from the mean and use it to set the line length.
             float dist = abs(point.sub(mean).mag());
-            if(dist > this.length){
-                this.length = 2*dist;
+            if(dist > length){
+                length = 2*dist;
             }
 
         }
@@ -78,11 +70,11 @@ public class Line{
     }
 
     public float getLength(){
-        return length;
+        return direction.mag();
     }
 
     public void draw(PApplet screen){
-        Vector endPoint = this.position.add(this.direction.mul(this.length));
+        Vector endPoint = this.position.add(this.direction);
         screen.line(position.x, position.y, endPoint.x, endPoint.y);
     }
 
