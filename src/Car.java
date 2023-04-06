@@ -50,7 +50,7 @@ public class Car{
 
         for(View view : views){
             ArrayList<PVector> pointList = view.getPoints();
-            slam.addPoints(pointList);
+            slam.RANSAC(pointList, view.getFOV() / view.getRayNum());
         }
     }
 

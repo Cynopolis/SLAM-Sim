@@ -18,7 +18,7 @@ public class Processing extends PApplet {
         processing = this;
         car = new Car(processing, 100,100,50,40);
         size(1000, 1000);
-        car.addView(60,6);
+        car.addView(180,180);
         for(int i = 0; i < 20; i++){
             Wall wall = new Wall(processing, new PVector((int)random(40, 1840), (int)random(40, 960)), (int)random(360), (int)random(100, 1000));
             objects.add(wall);
