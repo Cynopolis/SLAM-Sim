@@ -1,3 +1,4 @@
+import static java.lang.Math.acos;
 import static java.lang.Math.sqrt;
 
 public class Vector {
@@ -64,5 +65,10 @@ public class Vector {
     Vector normalize(){
         float mag = this.mag();
         return new Vector(x / mag, y / mag, z / mag);
+    }
+
+    float angleDiff(Vector other){
+        float dot = this.dot(other);
+        return (float)acos(dot / (this.mag() * other.mag()));
     }
 }

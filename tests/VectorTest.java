@@ -81,4 +81,17 @@ class VectorTest{
         assertFloatEquals((float)-216.2, cross.z, (float)0.1);
     }
 
+    @Test
+    public void testAngleDiff(){
+        Vector v1 = new Vector(1, 0);
+        Vector v2 = new Vector(0, 1);
+        Vector v3 = new Vector(-1, 0);
+
+        assertFloatEquals(v1.angleDiff(v1), 0);
+        assertFloatEquals(v1.angleDiff(v2), (float) toRadians(90));
+        assertFloatEquals(v1.angleDiff(v3), (float) toRadians(180));
+        assertFloatEquals(v1.angleDiff(v1.mul(100)), 0);
+        assertFloatEquals(v1.angleDiff(v2.mul(100)), (float) toRadians(90));
+    }
+
 }
