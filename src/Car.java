@@ -39,7 +39,7 @@ public class Car{
         proc.stroke(255);
         proc.ellipse(pose.x, pose.y, carWidth, carLength);
         this.updateScan(walls);
-        this.slam.drawLines();
+//        this.slam.drawLines();
     }
 
     //With all the views that the car has, get their point list
@@ -50,7 +50,7 @@ public class Car{
 
         for(View view : views){
             ArrayList<Vector> pointList = view.getPoints();
-            slam.RANSAC(pointList, view.getFOV() / view.getRayNum());
+//            slam.RANSAC(pointList, view.getFOV() / view.getRayNum());
         }
     }
 

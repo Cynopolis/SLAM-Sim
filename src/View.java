@@ -25,7 +25,7 @@ public class View {
         rays.clear();
         float angle = (float) (0.01 - angleOffset); //the 0.01 fixes some bugs
         for (int i = 0; i < numberOfRays; i++) {
-            Ray ray = new Ray(proc, pose, 100000, angle);
+            Ray ray = new Ray(pose, angle);
             angle = angle + rayStep;
             rays.add(ray);
         }
@@ -35,7 +35,7 @@ public class View {
     public void look(ArrayList<Wall> walls) {
         for (Ray ray : rays) {
             ray.castRay(walls);
-            ray.drawRay();
+            ray.drawRay(proc);
         }
     }
 

@@ -6,7 +6,6 @@ public class Processing extends PApplet {
 
     Car car;
     ArrayList<Wall> objects = new ArrayList<>();
-
     public static PApplet processing;
 
     public static void main(String[] args) {
@@ -25,10 +24,12 @@ public class Processing extends PApplet {
     }
     public void draw(){
         background(0);
-//        for(Wall object : objects){
-//            object.drawWall();
-//        }
+        for(Wall object : objects){
+            object.drawWall();
+        }
         car.drawCar(objects);
+        strokeWeight(2);
+        stroke(255);
         //car.drive(new int[] {0, 0});
     }
 

@@ -78,6 +78,8 @@ public class Line{
         screen.line(position.x, position.y, endPoint.x, endPoint.y);
     }
 
+    public float getAngle(){return atan2(this.direction.y, this.direction.x);}
+
     /**
      * @param point
      * @return the smallest distance from the point to this line
