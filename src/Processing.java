@@ -16,9 +16,9 @@ public class Processing extends PApplet {
         processing = this;
         car = new Car(processing, 100,100,50,40);
         size(1000, 1000);
-        car.addView(180,180);
-        for(int i = 0; i < 20; i++){
-            Wall wall = new Wall(processing, new Vector((int)random(40, 1840), (int)random(40, 960)), (int)random(360), (int)random(100, 1000));
+        car.addView(180,90);
+        for(int i = 0; i < 15; i++){
+            Wall wall = new Wall(processing, new Vector((int)random(50, 950), (int)random(50, 950)), new Vector((int)random(50, 950), (int)random(50, 950)));
             objects.add(wall);
         }
     }
@@ -35,16 +35,16 @@ public class Processing extends PApplet {
 
     public void keyPressed(){
         if(key == 'd'){
-            car.setPose(car.getPose().add(1, 0));
+            car.setPose(car.getPose().add(10, 0));
         }
         if(key == 'w'){
-            car.setPose(car.getPose().add(0, -1));
+            car.setPose(car.getPose().add(0, -10));
         }
         if(key == 'a'){
-            car.setPose(car.getPose().add(-1, 0));
+            car.setPose(car.getPose().add(-10, 0));
         }
         if(key == 's'){
-            car.setPose(car.getPose().add(0, 1));
+            car.setPose(car.getPose().add(0, 10));
         }
         if(key == 'q'){
             car.setAngle(car.getAngle()+1);

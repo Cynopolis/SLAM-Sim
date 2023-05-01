@@ -1,5 +1,4 @@
-import static java.lang.Math.acos;
-import static java.lang.Math.sqrt;
+import static java.lang.Math.*;
 
 public class Vector {
     public float x = 0;
@@ -67,8 +66,18 @@ public class Vector {
         return new Vector(x / mag, y / mag, z / mag);
     }
 
+    /**
+     * @param other
+     * @return
+     */
     float angleDiff(Vector other){
-        float dot = this.dot(other);
-        return (float)acos(dot / (this.mag() * other.mag()));
+        float dot = this.dot(other);     // dot product
+        float det = this.x*other.y - this.y*other.x;    // determinant
+        float angle = (float) atan2(det, dot);  // atan2(y, x) or atan2(sin, cos)
+        return angle;
+    }
+
+    float angle(){
+        return (float) atan2(y, x);
     }
 }

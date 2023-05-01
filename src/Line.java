@@ -5,7 +5,9 @@ import java.util.List;
 import static processing.core.PApplet.*;
 
 public class Line{
+    // vector which represents  the direction and length of the line from its starting position
     protected Vector direction = new Vector(0,0);
+    // store the starting position of the line
     protected Vector position = new Vector(0,0);
 
     Line(Vector startPosition, Vector endPosition){
@@ -79,6 +81,10 @@ public class Line{
     }
 
     public float getAngle(){return atan2(this.direction.y, this.direction.x);}
+
+    public Vector endPoint(){
+        return this.position.add(this.direction);
+    }
 
     /**
      * @param point
