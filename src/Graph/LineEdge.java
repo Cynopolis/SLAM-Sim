@@ -12,8 +12,7 @@ public class LineEdge extends Edge implements LineInterface{
     protected PointVertex vEnd;
     protected Line line;
     public LineEdge(PointVertex vStart, PointVertex vEnd) {
-        this.vStart = vStart;
-        this.vEnd = vEnd;
+        super(vStart, vEnd);
         this.line = new Line(vStart.getPos(), vEnd.getPos());
     }
 

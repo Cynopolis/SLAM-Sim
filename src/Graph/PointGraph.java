@@ -3,6 +3,10 @@ package Graph;
 import Vector.Vector;
 import processing.core.PApplet;
 
+import java.io.File;  // Import the File class
+import java.io.FileWriter;
+import java.io.IOException;  // Import the IOException class to handle errors
+
 import static java.lang.Math.pow;
 import static java.lang.Math.sqrt;
 
@@ -91,7 +95,7 @@ public class PointGraph extends Graph {
      * @param y the y coordinate to search by
      * @return the pointvertex closest to the given x, y coordinates
      */
-    public PointVertex getClosestVertex(float x, float y){
+    public PointVertex getClosestVertex(Vector point){
         if(super.adjList.size() == 0){
             // TODO: choose a better exception name
             throw new NullPointerException();
@@ -102,7 +106,7 @@ public class PointGraph extends Graph {
         for(Vertex v : super.adjList.keySet()){
             PointVertex v1 = (PointVertex) v;
             Vector p2 = v1.getPos();
-            float dist = (float)sqrt(pow(x-p2.x, 2) + pow(y-p2.y, 2));
+            float dist = p2.sub(point).mag();
             if(dist < closestDist || closestDist == -1){
                 closestDist = dist;
                 closestVertex = v1;
@@ -112,14 +116,24 @@ public class PointGraph extends Graph {
         return closestVertex;
     }
 
+    public void removeVertex(PointVertex v){
+        if(selectedVertex == v){
+            selectedVertex = null;
+        }
+        super.removeVertex(v);
+    }
+
     /**
      * @return a bundle with all of the graphs vertex and edge information saved into it
      */
-    /*
-    public Bundle saveToBundle(){
-        Bundle bundle = new Bundle();
-        bundle.putInt("numVerts", super.numVertices());
-        bundle.putInt("numEdges", super.numEdges());
+
+    public void save() throws IOException {
+        FileWriter file = new FileWriter("map.txt");
+
+
+
+        file.write("numVerts," + super.numVertices());
+        file.write("\nnumEdges," + super.numEdges());
 
         // turn the hash map into something linear
         ArrayList<PointVertex> verts = new ArrayList<>();
@@ -134,20 +148,9 @@ public class PointGraph extends Graph {
         // save the vertexes
         int countVerts = 0;
         for(PointVertex v : verts){
-            String countVertsString = "vert"+String.valueOf(countVerts);
+            String countVertsString = "\nvert"+String.valueOf(countVerts);
             // save the vertex position
-            bundle.putFloatArray(countVertsString+"Pos", v.getPos());
-            // save the vertex label
-            bundle.putString(countVertsString+"Label", v.getLabel());
-
-            // save if the vertex is selected
-            if(selectedVertex != null){
-                // save if it is the selected vertex
-                bundle.putBoolean(countVertsString+"isSelected", v == selectedVertex);
-            }
-            else{
-                bundle.putBoolean(countVertsString+"isSelected", false);
-            }
+            file.write(countVertsString+"Pos,"+v.getPos().x+","+v.getPos().y);
             countVerts++;
         }
 
@@ -155,21 +158,21 @@ public class PointGraph extends Graph {
         int countEdges = 0;
         for(Edge e : edges){
             int idx = 0;
-            String countEdgesString = "edge" + String.valueOf(countEdges);
+            String countEdgesString = "\nedge" + String.valueOf(countEdges);
             for(PointVertex v : verts){
                 if(e.getStartVertex() == (Vertex)v){
-                    bundle.putInt(countEdgesString+"Start", idx);
+                    file.write(countEdgesString+"Start,"+ idx);
                 }
                 else if(e.getEndVertex() == (Vertex)v){
-                    bundle.putInt(countEdgesString+"End", idx);
+                    file.write(countEdgesString+"End," + idx);
                 }
                 idx++;
             }
             countEdges++;
         }
-        return bundle;
+        file.close();
     }
-    */
+
     /**
      * @ brief add all graph information in ta bundle to the graph
      * @param bundle the bundle to add to the graph

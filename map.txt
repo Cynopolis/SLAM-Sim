@@ -1,0 +1,12 @@
+numVerts,4
+numEdges,3
+vert0Pos,797.0,539.0
+vert1Pos,149.0,673.0
+vert2Pos,609.0,247.0
+vert3Pos,724.0,857.0
+edge0End,0
+edge0Start,3
+edge1End,2
+edge1Start,3
+edge2End,1
+edge2Start,3
