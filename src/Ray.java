@@ -1,3 +1,4 @@
+import Graph.*;
 import Vector.*;
 
 import processing.core.PApplet;
@@ -26,10 +27,10 @@ public class Ray extends Line {
 
 
     //checks to see at what coordinate the ray will collide with an object and sets the ray length to meet that point.
-    public void castRay(ArrayList<Wall> walls){
+    public void castRay(PointGraph map){
         float shortestWallDistance = maxRayDistance;
-        int[] newColor = new int[]{255, 255, 255};
-        for(Wall wall : walls){
+        ArrayList<LineEdge> walls = map.getAllEdges();
+        for(LineEdge wall : walls){
 
             // get the necessary vectors for two parameterized lines
             // parameterized lines are of the form L = d*t + p
@@ -51,7 +52,6 @@ public class Ray extends Line {
             float distance = d1.mul(t).add(p1).sub(this.position).mag();
             if(distance < shortestWallDistance){
                 shortestWallDistance = distance;
-                newColor = new int[]{wall.r, wall.g, wall.b};
             }
 
         }
@@ -59,11 +59,9 @@ public class Ray extends Line {
         // if we collided with a wall, set the ray's length to the distance from it to the collision
         if(shortestWallDistance != maxRayDistance){
             this.direction = this.direction.normalize().mul(shortestWallDistance);
-            this.color = newColor;
         }
         else{
             this.direction = this.direction.normalize().mul(maxRayDistance);
-            this.color = new int[]{255, 255, 255};
         }
     }
 
@@ -92,8 +90,8 @@ public class Ray extends Line {
     public void setRayLength(int rayLength){this.direction = this.direction.normalize().mul(rayLength);}
 
     public void setAngle(float angle){
-        float distance = this.direction.mag();
-        this.direction = new Vector(cos(angle), sin(angle)).mul(distance);
+        float currentAngle = direction.angle();
+        this.direction = direction.rotate2D(angle - currentAngle);
     }
 
 }

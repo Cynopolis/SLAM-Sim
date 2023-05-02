@@ -11,7 +11,7 @@ import java.util.ArrayList;
 
 public class PointGraph extends Graph {
     PointVertex selectedVertex;
-    PointGraph(){
+    public PointGraph(){
         super();
     }
 
@@ -24,6 +24,21 @@ public class PointGraph extends Graph {
                 e1.draw(proc);
             }
         }
+    }
+
+    public void addEdge(PointVertex vStart, PointVertex vEnd){
+        addVertex(vStart);
+
+        // don't add the edge if it is already added
+        for(Edge e : adjList.get(vStart)){
+            if(e.getEndVertex() == (Vertex) vEnd){
+                return;
+            }
+        }
+
+        addVertex(vEnd);
+        LineEdge edge = new LineEdge(vStart, vEnd);
+        adjList.get((Vertex) vStart).add(new LineEdge(vStart, vEnd));
     }
 
     /**

@@ -10,7 +10,7 @@ public class PointVertex extends Vertex {
      * @param xPos the x position of the vertex
      * @param yPos the y posiiton of the vertex
      */
-    PointVertex(float xPos, float yPos){
+    public PointVertex(float xPos, float yPos){
         super();
         this.position = new Vector(xPos, yPos);
     }

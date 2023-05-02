@@ -1,3 +1,4 @@
+import Graph.PointGraph;
 import Vector.Vector;
 import processing.core.*;
 import java.util.ArrayList;
@@ -30,9 +31,9 @@ public class View {
     }
 
     //sees if the ray will collide with the walls in the wall list
-    public void look(ArrayList<Wall> walls) {
+    public void look(PointGraph map) {
         for (Ray ray : rays) {
-            ray.castRay(walls);
+            ray.castRay(map);
             if(ray.hasCollided()){
                 ray.drawRay(proc);
             }

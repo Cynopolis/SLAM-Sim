@@ -5,6 +5,8 @@ import processing.core.PApplet;
 
 import java.awt.*;
 
+import static java.lang.Math.PI;
+
 public class LineEdge extends Edge implements LineInterface{
     protected PointVertex vStart;
     protected PointVertex vEnd;
@@ -41,5 +43,12 @@ public class LineEdge extends Edge implements LineInterface{
 
     public void draw(PApplet proc){
         line.draw(proc);
+        Vector leftFlange = line.getDirection().rotate2D((float)(-3*PI/4)).normalize().mul(20);
+        Vector rightFlange = line.getDirection().rotate2D((float) (3*PI/4)).normalize().mul(20);
+        Line l1 = new Line(line.endPoint(), line.endPoint().add(leftFlange));
+        Line l2 = new Line(line.endPoint(), line.endPoint().add(rightFlange));
+        l1.draw(proc);
+        l2.draw(proc);
     }
+
 }
