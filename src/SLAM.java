@@ -1,3 +1,4 @@
+import Vector.*;
 import processing.core.*;
 
 import java.util.ArrayList;
@@ -97,12 +98,6 @@ public class SLAM{
 
         }
 
-    }
-
-    public void drawLines(){
-        for(Line line : lines){
-            line.draw(proc);
-        }
     }
 
 }

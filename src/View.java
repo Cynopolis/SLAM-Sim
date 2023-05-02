@@ -1,8 +1,6 @@
+import Vector.Vector;
 import processing.core.*;
 import java.util.ArrayList;
-import java.util.Objects;
-
-import static processing.core.PApplet.*;
 
 public class View {
     Vector pose;
@@ -35,7 +33,9 @@ public class View {
     public void look(ArrayList<Wall> walls) {
         for (Ray ray : rays) {
             ray.castRay(walls);
-            ray.drawRay(proc);
+            if(ray.hasCollided()){
+                ray.drawRay(proc);
+            }
         }
     }
 
@@ -80,8 +80,7 @@ public class View {
         ArrayList<Vector> points = new ArrayList<>();
 
         for (Ray ray : rays) {
-            if (!Objects.equals(ray.getPoint(), new Vector(0, 0) {
-            })) {
+            if (ray.hasCollided()){
                 points.add(ray.getPoint());
             }
         }

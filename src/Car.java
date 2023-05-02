@@ -3,6 +3,8 @@ import java.util.ArrayList;
 import static java.lang.Math.PI;
 import static processing.core.PApplet.degrees;
 import static processing.core.PApplet.radians;
+
+import Vector.Vector;
 import processing.core.PApplet;
 
 public class Car{

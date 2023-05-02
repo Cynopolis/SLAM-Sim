@@ -1,11 +1,12 @@
+import Vector.*;
+
 import processing.core.PApplet;
-import processing.core.PVector;
 
 import java.util.ArrayList;
 
 import static processing.core.PApplet.*;
 
-public class Ray extends Line{
+public class Ray extends Line {
     float maxRayDistance = 1000;
     int[] color = new int[]{255, 255, 255};
     //takes the starting position of the ray, the length of the ray, and it's casting angle (radians)
@@ -33,9 +34,9 @@ public class Ray extends Line{
             // get the necessary vectors for two parameterized lines
             // parameterized lines are of the form L = d*t + p
             Vector d1 = this.direction.normalize().mul(maxRayDistance);
-            Vector d2 = wall.direction;
+            Vector d2 = wall.getDirection();
             Vector p1 = this.position;
-            Vector p2 = wall.position;
+            Vector p2 = wall.getPosition();
 
             // calculate the parameters for the intersection t and u
             float t = -(d2.x*(p2.y-p1.y) + d2.y*(p1.x-p2.x))/(d1.x*d2.y - d2.x*d1.y);
@@ -72,13 +73,13 @@ public class Ray extends Line{
 
 
     public boolean hasCollided(){
-        return this.direction.mag() != maxRayDistance;
+        return abs(this.direction.mag() - maxRayDistance) > 0.001;
     }
 
     //returns the absolute position of the point
     public Vector getPoint(){
         if(this.direction.mag() == 0){
-            return new Vector();
+            return this.position;
         }
 
         return this.position.add(this.direction);

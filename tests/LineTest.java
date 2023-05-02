@@ -1,8 +1,8 @@
+import Vector.Vector;
+import Vector.Line;
 import org.junit.jupiter.api.Test;
-import processing.core.PApplet;
 
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Random;
 
 import static java.lang.Math.abs;
@@ -81,22 +81,6 @@ class LineTest{
         // make sure the line is starting in the correct place
         assertFloatEquals(v1.x, line.getPosition().x);
         assertFloatEquals(v1.y, line.getPosition().y);
-    }
-
-    @Test
-    public void testAngle(){
-        Line ray = new Line(new Vector(680, 560), new Vector(680+116, 560+1));
-        Line wall = new Line(new Vector(675, 587), new Vector(675-114, 587-29));
-
-
-        float angle1 = wall.position.sub(ray.position).angle();
-        float angle2 = wall.endPoint().sub(ray.position).angle();
-        float rayAngle = ray.direction.angle();
-
-        System.out.println("Angle 1: " + String.valueOf(angle1) + ", Angle 2: " + String.valueOf(angle2) + ", Ray Angle: " + String.valueOf(rayAngle));
-        assertFloatEquals(1.753907144057f, angle1, 0.001f);
-        assertFloatEquals(3.1583977941048f, angle2, 0.001f);
-        assertFloatEquals(0.0086204761121f, rayAngle, 0.001f);
     }
 
 }

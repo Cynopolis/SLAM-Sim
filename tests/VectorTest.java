@@ -1,5 +1,5 @@
+import Vector.Vector;
 import org.junit.jupiter.api.Test;
-import processing.core.PApplet;
 
 import static java.lang.Math.*;
 import static org.junit.jupiter.api.Assertions.*;
@@ -28,8 +28,8 @@ class VectorTest{
                 assertFloatEquals((float)sqrt(x2*x2 + y2*y2), v2.mag());
 
                 // test dot product
-                assertFloatEquals((float)(x1*x2+y1*y2), v1.dot(v2));
-                assertFloatEquals((float)(x1*x2+y1*y2), v2.dot(v1));
+                assertFloatEquals((x1*x2+y1*y2), v1.dot(v2));
+                assertFloatEquals((x1*x2+y1*y2), v2.dot(v1));
 
                 // test addition
                 Vector vSum = v1.add(v2);

@@ -1,8 +1,9 @@
+import Vector.*;
 import processing.core.*;
 
 import static processing.core.PApplet.*;
 
-public class Wall extends Line{
+public class Wall extends Line {
     int r;
     int g;
     int b;

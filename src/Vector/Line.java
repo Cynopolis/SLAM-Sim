@@ -1,16 +1,19 @@
+package Vector;
+
+import Vector.Vector;
 import processing.core.PApplet;
 
 import java.util.List;
 
 import static processing.core.PApplet.*;
 
-public class Line{
+public class Line implements LineInterface{
     // vector which represents  the direction and length of the line from its starting position
     protected Vector direction = new Vector(0,0);
     // store the starting position of the line
     protected Vector position = new Vector(0,0);
 
-    Line(Vector startPosition, Vector endPosition){
+    public Line(Vector startPosition, Vector endPosition){
         direction = endPosition.sub(startPosition);
         position = startPosition;
     }
@@ -19,7 +22,7 @@ public class Line{
      * attempt to find the line of best fit for the given points
      * @param points the points to get the line of best for
      */
-    Line(List<Vector> points){
+    public Line(List<Vector> points){
         bestFit(points);
     }
 
@@ -75,11 +78,6 @@ public class Line{
         return direction.mag();
     }
 
-    public void draw(PApplet screen){
-        Vector endPoint = this.position.add(this.direction);
-        screen.line(position.x, position.y, endPoint.x, endPoint.y);
-    }
-
     public float getAngle(){return atan2(this.direction.y, this.direction.x);}
 
     public Vector endPoint(){
@@ -92,5 +90,9 @@ public class Line{
      */
     public float getDistance(Vector point){
         return (point.sub(position).cross(direction)).mag() / direction.mag();
+    }
+
+    public void draw(PApplet proc){
+        proc.line(position.x, position.y, endPoint().x, endPoint().y);
     }
 }
