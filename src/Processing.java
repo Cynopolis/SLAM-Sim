@@ -2,6 +2,7 @@ import Graph.*;
 import Vector.Vector;
 import processing.core.PApplet;
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
 
 
@@ -66,9 +67,25 @@ public class Processing extends PApplet {
         if(key == ESC){
             System.out.println("Attempting to save map to file.");
             try{
-                map.save();
+                PointGraphWriter writer = new PointGraphWriter();
+                writer.save("map.txt", map);
             }
             catch(IOException e){
+                e.printStackTrace();
+            }
+        }
+        if(key == 'l'){
+            System.out.println("Attempting to load a map from file");
+            try{
+                PointGraphWriter writer = new PointGraphWriter();
+                map = writer.loadFile("map.txt");
+            }
+            catch (FileNotFoundException e){
+                System.out.println("File not found");
+                e.printStackTrace();
+            }
+            catch (NumberFormatException e){
+                System.out.println("Number format incorrect");
                 e.printStackTrace();
             }
         }
