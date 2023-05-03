@@ -79,7 +79,7 @@ public class SLAM{
     public void RANSAC(View view){
         unassociatedPoints.addAll(view.getPoints());
 
-        float degreeRange = radians(25/2); // range to randomly sample readings within
+        float degreeRange = radians(10); // range to randomly sample readings within
         int numSampleReadings = 10; // number of readings to randomly sample
 
         int consensus = 7; // the number of points that need to lie near a line for it to be considered valid.
@@ -98,8 +98,10 @@ public class SLAM{
             // get a random sub sample of newPoints within the index range of a given size
             List<Vector> randomSample = this.randomSampleInAngleRange(this.unassociatedPoints, numSampleReadings, randomAngle-degreeRange, randomAngle+degreeRange);
 
-            // check if the sub sample forms a valid line and remove the randomSample points if it does.
-            extractFeature(randomSample, maxRange, consensus);
+            if(randomSample.size() >= numSampleReadings){
+                // check if the sub sample forms a valid line and remove the randomSample points if it does.
+                extractFeature(randomSample, maxRange, consensus);
+            }
 
         }
 

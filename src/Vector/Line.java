@@ -37,26 +37,28 @@ public class Line implements LineInterface{
 
         // this section calculates the direction vector of the line of best fit
         Vector direction = new Vector();
-        float length = 1;
+        float length = 0;
         // get the rise and run of the line of best fit
         for(Vector point : points){
             direction.y += (point.x - mean.x)*(point.y - mean.y); // rise
             direction.x += pow((point.x - mean.x),2);
 
-            // find the point that's furthest from the mean and use it to set the line length.
+            // get the average distance avery point is away from the mean.
             float dist = abs(point.sub(mean).mag());
-            if(dist > length){
-                length = 2*dist;
-            }
+            length += dist;
 
         }
+        length = 2.5f*length/points.size();
+        // if the direction is perfectly vertical create a line to represent that.
         if(direction.y == 0){
             this.direction = new Vector(0, 1);
         }
         else{
             this.direction = new Vector(1, direction.y/direction.x);
         }
+        // scale the direction vector to be the correct length of the line.
         this.direction = this.direction.normalize().mul(length);
+
         this.position = mean.sub(this.direction.div(2));
     }
 

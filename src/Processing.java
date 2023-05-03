@@ -12,6 +12,7 @@ public class Processing extends PApplet {
     public static PApplet processing;
 
     PointGraph map = new PointGraph();
+    boolean mapIsHidden = false;
 
     public static void main(String[] args) {
         PApplet.main("Processing");
@@ -21,7 +22,7 @@ public class Processing extends PApplet {
         processing = this;
         car = new Car(processing, 100,100,50,40);
         size(1000, 1000);
-        car.addView(360,180);
+        car.addView(360,360);
 
 //        for(int i = 0; i < 10; i++){
 //            PointVertex vStart = new PointVertex(random(50, 950), random(50, 950));
@@ -32,7 +33,9 @@ public class Processing extends PApplet {
     }
     public void draw(){
         background(0);
-        map.draw(processing);
+        if(!mapIsHidden){
+            map.draw(processing);
+        }
         car.drawCar(map);
         strokeWeight(2);
         stroke(255);
@@ -88,6 +91,9 @@ public class Processing extends PApplet {
                 System.out.println("Number format incorrect");
                 e.printStackTrace();
             }
+        }
+        if(key == 'h'){
+            mapIsHidden = !mapIsHidden;
         }
     }
 
