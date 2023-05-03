@@ -22,7 +22,7 @@ public class View {
     public void setRayNum(int numberOfRays, float FOV, float angleOffset) {
         float rayStep = FOV / numberOfRays;
         rays.clear();
-        float angle = (float) (0.01 - angleOffset); //the 0.01 fixes some bugs
+        float angle = (float) (angleOffset); //the 0.01 fixes some bugs
         for (int i = 0; i < numberOfRays; i++) {
             Ray ray = new Ray(pose, angle);
             angle = angle + rayStep;
@@ -51,7 +51,10 @@ public class View {
     //changes the angle of the view
     public void setAngle(float angle) {
         this.angle = angle;
-        this.setRayNum(rays.size(), this.FOV, angle);
+        for(Ray ray : rays){
+            float angleOffset = ray.getAngle() - this.angle;
+            ray.setAngle(this.angle+angleOffset);
+        }
     }
 
     //changes the field of view of the view
@@ -81,11 +84,27 @@ public class View {
         ArrayList<Vector> points = new ArrayList<>();
 
         for (Ray ray : rays) {
-            if (ray.hasCollided()){
-                points.add(ray.getPoint());
+            if(ray.hasCollided()){
+                Vector point = ray.getPoint();
+                // store the angle information for that point in the z coordinate
+                point.z = ray.getAngle();
+                points.add(point);
             }
         }
         return points;
+    }
+
+    /**
+     * @return A list of the angles where a collision was detected
+     */
+    public ArrayList<Float> getAngles(){
+        ArrayList<Float> angles = new ArrayList<>();
+        for (Ray ray : rays) {
+            if (ray.hasCollided()){
+                angles.add(ray.getAngle());
+            }
+        }
+        return angles;
     }
 }
 
