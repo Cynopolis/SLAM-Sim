@@ -11,7 +11,7 @@ import static processing.core.PApplet.*;
 
 public class SLAM{
     ArrayList<Line> lines = new ArrayList<>();
-    ArrayList<Vector> unassociatedPoints = new ArrayList<>();
+    ShortTermMem unassociatedPoints = new ShortTermMem();
     private static PApplet proc;
 
     SLAM(PApplet processing){
@@ -27,7 +27,7 @@ public class SLAM{
      */
     private List<Vector> randomSampleInAngleRange(ArrayList<Vector> set, int subSampleSize, float minAngle, float maxAngle){
 
-        // create an arraylist with all points within the angle range fro mthe given set
+        // create an arraylist with all points within the angle range from the given set
         ArrayList<Vector> pointsInAngleRange = new ArrayList<>();
         for(Vector point : set){
             if(minAngle <= point.z && point.z <= maxAngle){
@@ -54,6 +54,7 @@ public class SLAM{
     private void extractFeature(List<Vector> randomSample, float maxRange, int consensus){
         // get a line of best fit for this list.
         Line bestFit = new Line(randomSample);
+        // check that there are enough points in the sample that are less than the maxRange away to form a consensus
         int count = 0;
         ArrayList<Vector> newRandomSample = new ArrayList<>();
         for (Vector v : randomSample) {
@@ -73,17 +74,35 @@ public class SLAM{
         }
     }
 
+    private void fitToPreviousReadings(List<Vector> sample, float maxRange){
+        // keep track of points that were succesffully associated so they can be removed from the sample at the end
+        ArrayList<Vector> pointsToRemove = new ArrayList<>();
+        // try to associate points from the smaple with pre-existing lines
+        for(Vector v: sample){
+            for(Line l : lines){
+                if(l.getDistance(v) < maxRange){
+                    l.refitLine(v);
+                    pointsToRemove.add(v);
+                }
+            }
+        }
+
+        for(Vector v : pointsToRemove){
+            sample.remove(v);
+        }
+    }
+
     /**
      * @param view a laser scan view
      */
     public void RANSAC(View view){
-        unassociatedPoints.addAll(view.getPoints());
+        unassociatedPoints.addScan(view.getPos(), view.getPoints());
 
-        float degreeRange = radians(10); // range to randomly sample readings within
-        int numSampleReadings = 10; // number of readings to randomly sample
+        float degreeRange = radians(5); // range to randomly sample readings within
+        int numSampleReadings = 15; // number of readings to randomly sample
 
-        int consensus = 7; // the number of points that need to lie near a line for it to be considered valid.
-        float maxRange = 5; // the maximum distance a point can be away from the line for it to count as a consensus
+        int consensus = 10; // the number of points that need to lie near a line for it to be considered valid.
+        float maxRange = 10; // the maximum distance a point can be away from the line for it to count as a consensus
 
         // this for loop determines the maximum number of trials we're willing to do.
         for(int j = 0; j < 20; j++) {
@@ -96,9 +115,11 @@ public class SLAM{
             float randomAngle = (float) (2*PI*(random()) - 0.5);
 
             // get a random sub sample of newPoints within the index range of a given size
-            List<Vector> randomSample = this.randomSampleInAngleRange(this.unassociatedPoints, numSampleReadings, randomAngle-degreeRange, randomAngle+degreeRange);
+            List<Vector> randomSample = this.randomSampleInAngleRange(this.unassociatedPoints.getPoints(), numSampleReadings, randomAngle-degreeRange, randomAngle+degreeRange);
 
             if(randomSample.size() >= numSampleReadings){
+                // try to associate points from the sample with previously made lines
+                fitToPreviousReadings(randomSample, maxRange);
                 // check if the sub sample forms a valid line and remove the randomSample points if it does.
                 extractFeature(randomSample, maxRange, consensus);
             }

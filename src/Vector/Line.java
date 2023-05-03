@@ -3,6 +3,7 @@ package Vector;
 import Vector.Vector;
 import processing.core.PApplet;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static processing.core.PApplet.*;
@@ -12,6 +13,8 @@ public class Line implements LineInterface{
     protected Vector direction = new Vector(0,0);
     // store the starting position of the line
     protected Vector position = new Vector(0,0);
+
+    protected ArrayList<Vector> points = new ArrayList<>();
 
     public Line(Vector startPosition, Vector endPosition){
         direction = endPosition.sub(startPosition);
@@ -26,8 +29,16 @@ public class Line implements LineInterface{
         bestFit(points);
     }
 
+    public void refitLine(Vector newPoint){
+        // add the new point to our list
+        this.points.add(newPoint);
+        // rerun the bestFit algorithm with the new point
+        bestFit(new ArrayList<>());
+    }
+
     // least squares line of best fit algorithm
-    private void bestFit(List<Vector> points){
+    public void bestFit(List<Vector> fitPoints){
+        this.points.addAll(fitPoints);
         // get the mean of all the points
         Vector mean = new Vector();
         for(Vector point : points){
@@ -48,7 +59,7 @@ public class Line implements LineInterface{
             length += dist;
 
         }
-        length = 2.5f*length/points.size();
+        length = 2f*length/points.size();
         // if the direction is perfectly vertical create a line to represent that.
         if(direction.y == 0){
             this.direction = new Vector(0, 1);
@@ -86,12 +97,15 @@ public class Line implements LineInterface{
         return this.position.add(this.direction);
     }
 
-    /**
-     * @param point
-     * @return the smallest distance from the point to this line
-     */
     public float getDistance(Vector point){
-        return (point.sub(position).cross(direction)).mag() / direction.mag();
+        float line_dist = direction.mag();
+        if(line_dist == 0) return this.position.sub(point).mag();
+
+        Vector l2 = this.endPoint();
+        float t = ((point.x - position.x) * (l2.x - position.x) + (point.y - position.y) * (l2.y - position.y) + (point.z - position.z) * (l2.z - position.z)) / line_dist;
+        t = constrain(t, 0, 1);
+        Vector closestPoint = new Vector(position.x + t * (l2.x - position.x), position.y + t * (l2.y - position.y), position.z + t * (l2.z - position.z));
+        return closestPoint.sub(point).mag();
     }
 
     public void draw(PApplet proc){

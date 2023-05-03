@@ -35,7 +35,8 @@ public class View {
         for (Ray ray : rays) {
             ray.castRay(map);
             if(ray.hasCollided()){
-                ray.drawRay(proc);
+                ray.getPoint().draw(proc);
+//                ray.drawRay(proc);
             }
         }
     }

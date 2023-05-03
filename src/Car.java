@@ -38,11 +38,13 @@ public class Car{
     }
 
     //draw the car and its views
-    public void drawCar(PointGraph g){
+    public void drawCar(PointGraph map, boolean SLAMIsHidden){
         proc.stroke(255);
         proc.ellipse(pose.x, pose.y, carWidth, carLength);
-        this.updateScan(g);
-        this.slam.drawFeatures(proc);
+        this.updateScan(map);
+        if(!SLAMIsHidden){
+            this.slam.drawFeatures(proc);
+        }
     }
 
     //With all the views that the car has, get their point list

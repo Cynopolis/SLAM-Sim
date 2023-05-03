@@ -1,5 +1,7 @@
 package Vector;
 
+import processing.core.PApplet;
+
 import static java.lang.Math.*;
 import static processing.core.PApplet.cos;
 import static processing.core.PApplet.sin;
@@ -89,5 +91,9 @@ public class Vector {
         float distance = mag();
         float currentAngle = this.angle();
         return new Vector(cos(currentAngle + angle), sin(currentAngle + angle)).mul(distance);
+    }
+
+    public void draw(PApplet proc){
+        proc.circle(this.x, this.y, 8);
     }
 }

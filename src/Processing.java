@@ -13,6 +13,7 @@ public class Processing extends PApplet {
 
     PointGraph map = new PointGraph();
     boolean mapIsHidden = false;
+    boolean SLAMIsHidden = false;
 
     public static void main(String[] args) {
         PApplet.main("Processing");
@@ -36,7 +37,7 @@ public class Processing extends PApplet {
         if(!mapIsHidden){
             map.draw(processing);
         }
-        car.drawCar(map);
+        car.drawCar(map, SLAMIsHidden);
         strokeWeight(2);
         stroke(255);
         //car.drive(new int[] {0, 0});
@@ -94,6 +95,9 @@ public class Processing extends PApplet {
         }
         if(key == 'h'){
             mapIsHidden = !mapIsHidden;
+        }
+        if(key == 'j'){
+            SLAMIsHidden = !SLAMIsHidden;
         }
     }
 
