@@ -1,29 +1,21 @@
 package ScanGraph;
 
-import Graph.PointGraph;
 import Graph.Vertex;
 import Vector.Vector;
-import processing.core.PApplet;
 
 import java.util.ArrayList;
 
-public class PointScan extends Vertex{
+public class ScanPoint extends Vertex{
 
     private Vector position;
+    private Vector orientation;
     private ArrayList<Vector> scan;
 
-    PointScan(Vector scanPosition, ArrayList<Vector> scan){
+    ScanPoint(Vector scanPosition, Vector orientation, ArrayList<Vector> scan) {
         super();
         this.position = scanPosition;
+        this.orientation = orientation;
         this.scan = scan;
-    }
-
-    /**
-     * @param x the new x position of the vertex
-     * @param y the new y posiiton of the vertex
-     */
-    public void setPos(float x, float y){
-        this.position = new Vector(x, y);
     }
 
     /**
@@ -31,6 +23,10 @@ public class PointScan extends Vertex{
      */
     public Vector getPos(){
         return position;
+    }
+
+    public Vector getOrientation(){
+        return this.orientation;
     }
 
     public ArrayList<Vector> getScan(){

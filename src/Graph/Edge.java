@@ -20,7 +20,7 @@ public class Edge {
      * @param vStart the vertex the edge starts at
      * @param vEnd the vertex the edge ends at
      */
-    Edge(Vertex vStart, Vertex vEnd){
+    protected Edge(Vertex vStart, Vertex vEnd){
         this.vStart = vStart;
         this.vEnd = vEnd;
     }
