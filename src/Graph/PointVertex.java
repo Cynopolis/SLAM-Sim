@@ -4,6 +4,7 @@ import processing.core.PApplet;
 
 public class PointVertex extends Vertex {
     private Vector position;
+
     private int[] color = new int[]{127, 255, 0, 0};
 
     /**

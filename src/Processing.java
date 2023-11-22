@@ -23,7 +23,7 @@ public class Processing extends PApplet {
         processing = this;
         car = new Car(processing, 100,100,50,40);
         size(1000, 1000);
-        car.addView(360,360);
+        car.addView(90,180);
 
 //        for(int i = 0; i < 10; i++){
 //            PointVertex vStart = new PointVertex(random(50, 950), random(50, 950));
@@ -40,7 +40,6 @@ public class Processing extends PApplet {
         car.drawCar(map, SLAMIsHidden);
         strokeWeight(2);
         stroke(255);
-        //car.drive(new int[] {0, 0});
     }
 
     public void keyPressed(){
@@ -127,7 +126,4 @@ public class Processing extends PApplet {
         PointVertex v = new PointVertex(clickPosition);
         map.addVertex(v);
     }
-
-
-
 }
