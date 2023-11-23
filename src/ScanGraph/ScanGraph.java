@@ -3,9 +3,10 @@ package ScanGraph;
 import Graph.Graph;
 import Graph.Vertex;
 import Vector.Vector;
+import org.ejml.simple.SimpleMatrix;
+import org.ejml.simple.SimpleSVD;
 
 import java.util.ArrayList;
-
 public class ScanGraph extends Graph{
 
     ScanPoint lastPoint;
@@ -46,7 +47,7 @@ public class ScanGraph extends Graph{
                     invalidPoints++;
                 }
             }
-            averagePosition = averagePosition.div(newScan.getScan().size() - invalidPoints);
+            SimpleMatrix averagePositionVector = new SimpleMatrix(averagePosition.div(newScan.getScan().size() - invalidPoints).toArray());
 
             // compute the average position of the reference scan
             Vector averageReferencePosition = new Vector(0, 0);
@@ -59,7 +60,7 @@ public class ScanGraph extends Graph{
                     invalidPoints++;
                 }
             }
-            averageReferencePosition = averageReferencePosition.div(referenceScan.getScan().size() - invalidPoints);
+            SimpleMatrix averageReferencePositionVector = new SimpleMatrix(averageReferencePosition.div(referenceScan.getScan().size() - invalidPoints).toArray());
 
             // compute the cross covariance matrix which is given by the formula:
             // covariance = the sum from 1 to N of (p_i) * (q_i)^T
@@ -81,7 +82,45 @@ public class ScanGraph extends Graph{
                 }
             }
 
-            // compute the single value decomposition of the cross covariance matrix
+            // convert the cross covariance matrix to a simple matrix from ejml
+            SimpleMatrix crossCovarianceMatrixSimple = new SimpleMatrix(crossCovarianceMatrix);
+            // perform the single value decomposition on the cross covariance matrix
+            SimpleSVD svd = crossCovarianceMatrixSimple.svd();
+            // get the rotation matrix from the svd
+            SimpleMatrix rotationMatrix = (SimpleMatrix) svd.getU().mult(svd.getV().transpose());
+            // get the translation vector from the svd
+            SimpleMatrix translationVector = averageReferencePositionVector.minus(rotationMatrix.mult(averagePositionVector));
+
+            // update the new scan with the rotation matrix and translation vector
+            for (int i = 0; i < newScan.getScan().size(); i++) {
+                Vector point = newScan.getScan().get(i);
+                if (point != null) {
+                    SimpleMatrix pointMatrix = new SimpleMatrix(point.toArray());
+                    SimpleMatrix newPointMatrix = rotationMatrix.mult(pointMatrix).plus(translationVector);
+                    newScan.getScan().set(i, new Vector((float) newPointMatrix.get(0), (float) newPointMatrix.get(1)));
+                }
+            }
+
+            // calculate the error between the new scan and the reference scan
+            float error = 0;
+            for (int i = 0; i < correspondenceMatrix.getOldPointIndices().size(); i++) {
+                int oldIndex = correspondenceMatrix.getOldPointIndices().get(i);
+                int newIndex = correspondenceMatrix.getNewPointIndices().get(i);
+                Vector oldPoint = referenceScan.getScan().get(oldIndex);
+                Vector newPoint = newScan.getScan().get(newIndex);
+                if (oldPoint != null && newPoint != null) {
+                    error += correspondenceMatrix.getDistances().get(i);
+                }
+            }
+            error /= correspondenceMatrix.getOldPointIndices().size();
+
+            // if the error is less than some threshold, then we have found a match
+            if (error < 0.1) {
+                return referenceScan;
+            }
+
+            // TODO: iteratively update the scan up to 5 times before determining that there is no match.
+
 
         }
 

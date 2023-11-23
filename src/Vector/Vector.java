@@ -96,4 +96,8 @@ public class Vector {
     public void draw(PApplet proc){
         proc.circle(this.x, this.y, 8);
     }
+
+    public float[] toArray() {
+        return new float[]{x, y};
+    }
 }
