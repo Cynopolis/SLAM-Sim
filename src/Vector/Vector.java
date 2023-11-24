@@ -1,5 +1,6 @@
 package Vector;
 
+import org.ejml.simple.SimpleMatrix;
 import processing.core.PApplet;
 
 import static java.lang.Math.*;
@@ -21,6 +22,18 @@ public class Vector {
         this.x = x;
         this.y = y;
         this.z = z;
+    }
+
+    public Vector(SimpleMatrix matrix){
+        // initialize x,y if matrix is 2x1 and x,y,z if matrix is 3x1
+        if(matrix.getNumRows() == 2){
+            this.x = (float)matrix.get(0,0);
+            this.y = (float)matrix.get(1,0);
+        }else if(matrix.getNumRows() == 3){
+            this.x = (float)matrix.get(0,0);
+            this.y = (float)matrix.get(1,0);
+            this.z = (float)matrix.get(2,0);
+        }
     }
     
     public Vector add(Vector other){
