@@ -8,10 +8,10 @@ import java.util.ArrayList;
 public class ScanPoint extends Vertex{
 
     private Vector position;
-    private Vector orientation;
+    private float orientation;
     private ArrayList<Vector> scan;
 
-    ScanPoint(Vector scanPosition, Vector orientation, ArrayList<Vector> scan) {
+    public ScanPoint(Vector scanPosition, float orientation, ArrayList<Vector> scan) {
         super();
         this.position = scanPosition;
         this.orientation = orientation;
@@ -25,11 +25,11 @@ public class ScanPoint extends Vertex{
         return position;
     }
 
-    public Vector getOrientation(){
+    public float getOrientation(){
         return this.orientation;
     }
 
-    public ArrayList<Vector> getScan(){
+    public ArrayList<Vector> getPoints(){
         return this.scan;
     }
 

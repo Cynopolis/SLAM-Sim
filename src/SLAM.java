@@ -1,7 +1,6 @@
 import Vector.*;
 import processing.core.*;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -96,7 +95,7 @@ public class SLAM{
      * @param view a laser scan view
      */
     public void RANSAC(View view){
-        unassociatedPoints.addScan(view.getPos(), view.getPoints());
+        unassociatedPoints.addScan(view.getPos(), view.getScan().getPoints());
 
         float degreeRange = radians(5); // range to randomly sample readings within
         int numSampleReadings = 15; // number of readings to randomly sample

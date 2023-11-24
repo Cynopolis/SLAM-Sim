@@ -2,18 +2,25 @@ import Graph.PointGraph;
 import Vector.Vector;
 import processing.core.*;
 import java.util.ArrayList;
+import ScanGraph.ScanPoint;
 
 public class View {
-    Vector pose;
+    Vector position;
     float angle = 0;
     float FOV;
     ArrayList<Ray> rays = new ArrayList<>();
     private static PApplet proc;
 
-    //the x,y position of the view, what angle it's looking at and its FOV
+    /**
+     * @brief Constructor for the View class
+     * @param processing The PApplet that the view will be drawn on
+     * @param newPose The position of the view
+     * @param numberOfRays The number of rays that the view will have
+     * @param FOV The field of view of the view
+     */
     View(PApplet processing, Vector newPose, int numberOfRays, float FOV) {
         proc = processing;
-        this.pose = newPose;
+        this.position = newPose;
         this.FOV = FOV;
         this.setRayNum(numberOfRays, FOV, this.angle);
     }
@@ -24,34 +31,42 @@ public class View {
         rays.clear();
         float angle = (float) (angleOffset); //the 0.01 fixes some bugs
         for (int i = 0; i < numberOfRays; i++) {
-            Ray ray = new Ray(pose, angle);
+            Ray ray = new Ray(position, angle);
             angle = angle + rayStep;
             rays.add(ray);
         }
     }
 
-    //sees if the ray will collide with the walls in the wall list
-    public void look(PointGraph map) {
+    /**
+     * @brief Calculates the points of intersection of the rays with the map
+     * @param map The map that the view is looking at
+     */
+    public void calculatePointScan(PointGraph map) {
         for (Ray ray : rays) {
             ray.castRay(map);
             if(ray.hasCollided()){
                 ray.getPoint().draw(proc);
-//                ray.drawRay(proc);
             }
         }
     }
 
-    //changes the position of the view
-    public void setPos(Vector newPose) {
-        pose = newPose;
+    /**
+     * @brief Sets the position of the view
+     * @param newPosition The new position of the view
+     */
+    public void setPos(Vector newPosition) {
+        position = newPosition;
         for (Ray ray : rays) {
-            ray.setPos(pose);
+            ray.setPos(position);
         }
     }
 
-    //changes the angle of the view
-    public void setAngle(float angle) {
-        this.angle = angle;
+    /**
+     * @brief Sets the angle of the view
+     * @param newAngle The new angle of the view
+     */
+    public void setAngle(float newAngle) {
+        this.angle = newAngle;
         for(Ray ray : rays){
             float angleOffset = ray.getAngle() - this.angle;
             ray.setAngle(this.angle+angleOffset);
@@ -64,24 +79,39 @@ public class View {
         this.setRayNum(this.rays.size(), this.FOV, this.angle);
     }
 
+    /**
+     * @return The position of the view
+     */
     public Vector getPos() {
-        return pose;
+        return position;
     }
 
+    /**
+     * @return The angle of the view
+     */
     public float getAngle() {
         return this.angle;
     }
 
+    /**
+     * @return The field of view of the view
+     */
     public float getFOV() {
         return this.FOV;
     }
 
+    /**
+     * @return The number of rays that the view has
+     */
     public int getRayNum() {
         return this.rays.size();
     }
 
-    //gets the point that each ray has collided with
-    public ArrayList<Vector> getPoints() {
+    /**
+     * @brief Get the most recent scan from the view
+     * @return A ScanPoint object containing the position, angle and points of the view
+     */
+    public ScanPoint getScan() {
         ArrayList<Vector> points = new ArrayList<>();
 
         for (Ray ray : rays) {
@@ -92,7 +122,7 @@ public class View {
                 points.add(point);
             }
         }
-        return points;
+        return new ScanPoint(this.position,this.angle, points);
     }
 
     /**

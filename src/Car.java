@@ -50,7 +50,7 @@ public class Car{
     //With all the views that the car has, get their point list
     void updateScan(PointGraph map){
         for(View view : views){
-            view.look(map);
+            view.calculatePointScan(map);
             slam.RANSAC(view);
 
         }
