@@ -100,8 +100,8 @@ class CorrespondenceMatrix{
         correspondenceMatrix.add(new ArrayList<Float>());
 
         // go through all of the points in the new scan and find the closest point in the old scan
-        for (int newPointIndex = 0; newPointIndex < newScan.getScan().size(); newPointIndex++) {
-            Vector newPoint = newScan.getScan().get(newPointIndex);
+        for (int newPointIndex = 0; newPointIndex < newScan.getPoints().size(); newPointIndex++) {
+            Vector newPoint = newScan.getPoints().get(newPointIndex);
             // if the new point is null, then skip it
             if (newPoint == null) {
                 continue;
@@ -109,8 +109,8 @@ class CorrespondenceMatrix{
             // find the closest point in the old scan
             float closestDistance = Float.MAX_VALUE;
             int closestIndex = -1;
-            for (int j = 0; j < referenceScan.getScan().size(); j++) {
-                Vector oldPoint = referenceScan.getScan().get(j);
+            for (int j = 0; j < referenceScan.getPoints().size(); j++) {
+                Vector oldPoint = referenceScan.getPoints().get(j);
                 // if the old point is null, then skip it
                 if (oldPoint == null) {
                     continue;
@@ -161,7 +161,7 @@ class ScanMatcher{
     private SimpleMatrix averageScanPosition(ScanPoint scan){
         Vector averagePosition = new Vector(0, 0);
         int invalidPoints = 0;
-        for (Vector point : scan.getScan()) {
+        for (Vector point : scan.getPoints()) {
             if (point != null) {
                 averagePosition = averagePosition.add(point);
             }
@@ -169,7 +169,7 @@ class ScanMatcher{
                 invalidPoints++;
             }
         }
-        return new SimpleMatrix(averagePosition.div(scan.getScan().size() - invalidPoints).toArray());
+        return new SimpleMatrix(averagePosition.div(scan.getPoints().size() - invalidPoints).toArray());
     }
 
     /**
@@ -190,8 +190,8 @@ class ScanMatcher{
         for (int i = 0; i < correspondenceMatrix.getOldPointIndices().size(); i++) {
             int oldIndex = correspondenceMatrix.getOldPointIndices().get(i);
             int newIndex = correspondenceMatrix.getNewPointIndices().get(i);
-            Vector oldPoint = referenceScan.getScan().get(oldIndex);
-            Vector newPoint = newScan.getScan().get(newIndex);
+            Vector oldPoint = referenceScan.getPoints().get(oldIndex);
+            Vector newPoint = newScan.getPoints().get(newIndex);
             if (oldPoint != null && newPoint != null) {
                 Vector oldPointCentered = oldPoint.sub(referenceScanAveragePosition);
                 Vector newPointCentered = newPoint.sub(newScanAveragePosition);
@@ -232,12 +232,12 @@ class ScanMatcher{
 
     public ScanPoint applyRotationAndTranslationMatrices(ScanPoint newScan){
         // apply the rotation matrix and translation vector to the new scan
-        for (int i = 0; i < newScan.getScan().size(); i++) {
-            Vector point = newScan.getScan().get(i);
+        for (int i = 0; i < newScan.getPoints().size(); i++) {
+            Vector point = newScan.getPoints().get(i);
             if (point != null) {
                 SimpleMatrix pointMatrix = new SimpleMatrix(point.toArray());
                 SimpleMatrix newPointMatrix = rotationMatrix.mult(pointMatrix).plus(translationVector);
-                newScan.getScan().set(i, new Vector((float) newPointMatrix.get(0), (float) newPointMatrix.get(1)));
+                newScan.getPoints().set(i, new Vector((float) newPointMatrix.get(0), (float) newPointMatrix.get(1)));
             }
         }
         return newScan;

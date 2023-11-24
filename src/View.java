@@ -2,6 +2,7 @@ import Graph.PointGraph;
 import Vector.Vector;
 import processing.core.*;
 import java.util.ArrayList;
+import ScanGraph.ScanPoint;
 
 public class View {
     Vector pose;
@@ -81,7 +82,7 @@ public class View {
     }
 
     //gets the point that each ray has collided with
-    public ArrayList<Vector> getPoints() {
+    public ScanPoint getScan() {
         ArrayList<Vector> points = new ArrayList<>();
 
         for (Ray ray : rays) {
@@ -92,7 +93,7 @@ public class View {
                 points.add(point);
             }
         }
-        return points;
+        return new ScanPoint(this.pose,this.angle, points);
     }
 
     /**
