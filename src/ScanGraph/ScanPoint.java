@@ -19,6 +19,17 @@ public class ScanPoint extends Vertex{
     }
 
     /**
+     * @brief Copy constructor
+     * @param other The scan point to copy
+     */
+    public ScanPoint(ScanPoint other){
+        super();
+        this.position = new Vector(other.getPos().x, other.getPos().y);
+        this.orientation = other.getOrientation();
+        this.scan = new ArrayList<>(other.getPoints());
+    }
+
+    /**
      * @return a two eleement float array containing the x and y coordinates of the vertex respectively.
      */
     public Vector getPos(){
