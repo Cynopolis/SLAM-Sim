@@ -79,15 +79,10 @@ public class Processing extends PApplet {
         }
         if(key == 'l'){
             System.out.println("Attempting to load a map from file");
-            try{
-                PointGraphWriter writer = new PointGraphWriter();
+            PointGraphWriter writer = new PointGraphWriter();
+            try {
                 map = writer.loadFile("map.txt");
-            }
-            catch (FileNotFoundException e){
-                System.out.println("File not found");
-                e.printStackTrace();
-            }
-            catch (NumberFormatException e){
+            } catch (NumberFormatException e) {
                 System.out.println("Number format incorrect");
                 e.printStackTrace();
             }
