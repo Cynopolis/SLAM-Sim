@@ -13,14 +13,40 @@ import static java.lang.Math.abs;
  */
 class ScanMatcher{
     // A 2x2 matrix describing a rotation to apply to the new scan
-    SimpleMatrix rotationMatrix;
+    public SimpleMatrix rotationMatrix = null;
 
     // A 2x1 matrix describing a translation to apply to the new scan
-    SimpleMatrix translationVector;
+    public SimpleMatrix translationVector = null;
 
     ScanMatcher(){
     }
 
+    /**
+     * @brief iteratively calculate new rotation and transpose matrices to determien if the two scans match
+     * @param referenceScan the scan to be referenced
+     * @param newScan the scan that will be rotated and moved until it matches the reference scan
+     * @param iterations The number of iterations that the scan matcher will attempt
+     * @param errorThreshold The error threshold that the match will have to meet before considering it a valid match
+     */
+    public ScanPoint iterativeScanMatch(ScanPoint referenceScan, ScanPoint newScan, float errorThreshold, int iterations){
+        for (int i = 0; i < iterations; i++) {
+            // calculate the rotation and translation matrices between the new scan and the reference scan
+            this.calculateRotationAndTranslationMatrices(referenceScan, newScan);
+
+            // update the new scan with the rotation matrix and translation vector
+            newScan = this.applyRotationAndTranslationMatrices(newScan);
+
+            // calculate the error between the new scan and the reference scan
+            float error = this.getError(referenceScan, newScan);
+
+            // if the error is less than some threshold, then we have found a match
+            if (error < errorThreshold) {
+                return referenceScan;
+            }
+        }
+
+        return null;
+    }
     /**
      * @brief Compute the average position of the scan
      * @param scan the scan to compute the average position of
@@ -159,58 +185,39 @@ class CorrespondenceMatrix{
      * @param newScan the new scan
      * @param referenceScan the reference scan
      */
-    private void calculateCorrespondenceMatrix(ScanPoint newScan, ScanPoint referenceScan){
-        // compute the correspondence matrix between the two scans. It is a 3xN matrix where N is the number of points in the scan
-        // Row 1 is the index of the point in the old scan
-        // Row 2 is the index of the point in the new scan
-        // Row 3 is the distance between the two points
-        // if either scan has a null point, then skip that point
-
-        // initialize the correspondence matrix as an array of array lists
-        ArrayList<ArrayList<Float>> correspondenceMatrix = new ArrayList<ArrayList<Float>>();
-        correspondenceMatrix.add(new ArrayList<Float>());
-        correspondenceMatrix.add(new ArrayList<Float>());
-        correspondenceMatrix.add(new ArrayList<Float>());
-
-        // go through all of the points in the new scan and find the closest point in the old scan
+    private void calculateCorrespondenceMatrix(ScanPoint newScan, ScanPoint referenceScan) {
         for (int newPointIndex = 0; newPointIndex < newScan.getPoints().size(); newPointIndex++) {
             Vector newPoint = newScan.getPoints().get(newPointIndex);
-            // if the new point is null, then skip it
+
+            // Skip null points in the new scan
             if (newPoint == null) {
                 continue;
             }
-            // find the closest point in the old scan
+
             float closestDistance = Float.MAX_VALUE;
             int closestIndex = -1;
-            for (int j = 0; j < referenceScan.getPoints().size(); j++) {
-                Vector oldPoint = referenceScan.getPoints().get(j);
-                // if the old point is null, then skip it
+
+            for (int oldPointIndex = 0; oldPointIndex < referenceScan.getPoints().size(); oldPointIndex++) {
+                Vector oldPoint = referenceScan.getPoints().get(oldPointIndex);
+
+                // Skip null points in the old scan
                 if (oldPoint == null) {
                     continue;
                 }
+
                 float distance = newPoint.sub(oldPoint).mag();
+
                 if (distance < closestDistance) {
                     closestDistance = distance;
-                    closestIndex = j;
+                    closestIndex = oldPointIndex;
                 }
             }
-            // only add the new point if it either:
-            // 1. has a closest point index which does not already exist in the correspondence matrix
-            // 2. has a closest point index which already exists in the correspondence matrix, but the distance is smaller than the existing distance
-            // In case 2, we want to replace the old point with the new point
+
+            // Add the correspondence if a closest point is found
             if (closestIndex != -1) {
-                if (correspondenceMatrix.get(0).contains((float) closestIndex)) {
-                    int oldIndex = correspondenceMatrix.get(0).indexOf((float) closestIndex);
-                    if (correspondenceMatrix.get(2).get(oldIndex) > closestDistance) {
-                        correspondenceMatrix.get(0).set(oldIndex, (float) closestIndex);
-                        correspondenceMatrix.get(1).set(oldIndex, (float) newPointIndex);
-                        correspondenceMatrix.get(2).set(oldIndex, closestDistance);
-                    }
-                } else {
-                    correspondenceMatrix.get(0).add((float) closestIndex);
-                    correspondenceMatrix.get(1).add((float) newPointIndex);
-                    correspondenceMatrix.get(2).add(closestDistance);
-                }
+                this.oldPointIndices.add(closestIndex);
+                this.newPointIndices.add(newPointIndex);
+                this.distances.add(closestDistance);
             }
         }
     }

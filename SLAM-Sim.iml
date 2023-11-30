@@ -11,7 +11,7 @@
     <orderEntry type="module-library" exported="">
       <library>
         <CLASSES>
-          <root url="jar:///opt/processing/processing-4.2/core/library/core.jar!/" />
+          <root url="jar://$USER_HOME$/Documents/processing-4.3/core/library/core.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />

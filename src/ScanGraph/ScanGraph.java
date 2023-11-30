@@ -31,25 +31,16 @@ public class ScanGraph extends Graph {
      */
     private ScanPoint getAssociatedScan(ScanPoint newScan) {
         ScanMatcher matcher = new ScanMatcher();
+        ScanPoint matchedScan = null;
         // go through all of our available scans and try to match the new scan with the old scans. If no match can be found return null
         for (Vertex v : adjList.keySet()) {
             ScanPoint referenceScan = (ScanPoint) v;
-            for (int i = 0; i < 5; i++) {
-                // calculate the rotation and translation matrices between the new scan and the reference scan
-                matcher.calculateRotationAndTranslationMatrices(referenceScan, newScan);
+            matchedScan = matcher.iterativeScanMatch(referenceScan, newScan, 0.1F, 10);
 
-                // update the new scan with the rotation matrix and translation vector
-                newScan = matcher.applyRotationAndTranslationMatrices(newScan);
-
-                // calculate the error between the new scan and the reference scan
-                float error = matcher.getError(referenceScan, newScan);
-
-                // if the error is less than some threshold, then we have found a match
-                if (error < 0.1) {
-                    return referenceScan;
-                }
+            if(matchedScan != null){
+                break;
             }
         }
-        return null;
+        return matchedScan;
     }
 }
