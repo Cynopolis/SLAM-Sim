@@ -96,10 +96,18 @@ public class Vector {
         return angle;
     }
 
+    /**
+     * @return The angle of the vector in radians
+     */
     public float angle(){
         return (float) atan2(y, x);
     }
 
+    /**
+     * @brief Rotate a 2D vector by a given angle
+     * @param angle The angle to rotate the vector by in radians
+     * @return The rotated vector
+     */
     public Vector rotate2D(float angle){
         float distance = mag();
         float currentAngle = this.angle();

@@ -52,10 +52,17 @@ public class PointGraphWriter {
         file.close();
     }
 
-    public PointGraph loadFile(String filename) throws FileNotFoundException, NumberFormatException {
+    public PointGraph loadFile(String filename) throws NumberFormatException {
         PointGraph g = new PointGraph();
         File file = new File(filename);
-        Scanner reader = new Scanner(file);
+        Scanner reader;
+        try {
+            reader = new Scanner(file);
+        }
+        catch (FileNotFoundException e){
+            System.out.println("File not found");
+            return g;
+        }
         ArrayList<PointVertex> vertices = new ArrayList<>();
         while(reader.hasNextLine()){
             String line = reader.nextLine();
