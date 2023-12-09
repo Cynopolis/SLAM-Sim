@@ -11,14 +11,14 @@ import static java.lang.Math.abs;
 /**
  * @brief A class that can match two point scans together
  */
-class ScanMatcher{
+public class ScanMatcher{
     // A 2x2 matrix describing a rotation to apply to the new scan
     public SimpleMatrix rotationMatrix = null;
 
     // A 2x1 matrix describing a translation to apply to the new scan
     public SimpleMatrix translationVector = null;
 
-    ScanMatcher(){
+    public ScanMatcher(){
     }
 
     /**
@@ -29,20 +29,37 @@ class ScanMatcher{
      * @param errorThreshold The error threshold that the match will have to meet before considering it a valid match
      */
     public ScanPoint iterativeScanMatch(ScanPoint referenceScan, ScanPoint newScan, float errorThreshold, int iterations){
-        for (int i = 0; i < iterations; i++) {
-            // calculate the rotation and translation matrices between the new scan and the reference scan
-            this.calculateRotationAndTranslationMatrices(referenceScan, newScan);
+        // calculate the rotation and translation matrices between the new scan and the reference scan
+        this.calculateRotationAndTranslationMatrices(referenceScan, newScan);
 
+        // copy the new scan so we don't modify the original
+        ScanPoint matchingScan = new ScanPoint(newScan);
+
+        SimpleMatrix lastRotationMatrix;
+        SimpleMatrix lastTranslationVector;
+
+        for (int i = 0; i < iterations; i++) {
             // update the new scan with the rotation matrix and translation vector
-            newScan = this.applyRotationAndTranslationMatrices(newScan);
+            matchingScan = this.applyRotationAndTranslationMatrices(matchingScan);
 
             // calculate the error between the new scan and the reference scan
-            float error = this.getError(referenceScan, newScan);
+            float error = this.getError(referenceScan, matchingScan);
 
             // if the error is less than some threshold, then we have found a match
             if (error < errorThreshold) {
                 return referenceScan;
             }
+
+            // cache the last rotation and translation matrices
+            lastRotationMatrix = new SimpleMatrix(this.rotationMatrix);
+            lastTranslationVector = new SimpleMatrix(this.translationVector);
+
+            // calculate the rotation and translation matrices between the new scan and the reference scan
+            this.calculateRotationAndTranslationMatrices(referenceScan, matchingScan);
+
+            // combine the last rotation and translation matrices with the new rotation and translation matrices
+            this.rotationMatrix = this.rotationMatrix.mult(lastRotationMatrix);
+            this.translationVector = this.translationVector.plus(lastTranslationVector);
         }
 
         return null;
