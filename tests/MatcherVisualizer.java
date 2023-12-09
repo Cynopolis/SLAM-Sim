@@ -23,13 +23,13 @@ public class MatcherVisualizer extends PApplet{
         // generate two scans rotated by 45 degrees and append them together
         Vector descriptor = new Vector(200, 200);
         ScanPoint scan1 = generateScanPoint(new Vector(500, 500), descriptor, 12);
-        ScanPoint scan2 = generateScanPoint(new Vector(500, 500), descriptor.rotate2D((float) Math.PI / 4), 12);
+        ScanPoint scan2 = generateScanPoint(new Vector(500, 500), descriptor.rotate2D((float) (6 * Math.PI / 9)), 12);
         this.referenceScan = appendScanPoints(scan1, scan2);
 
         // generate two scans offset by some amount and rotated by 55 degrees and append them together
         Vector rotated = descriptor.rotate2D((float) Math.PI);
         ScanPoint scan4 = generateScanPoint(new Vector(250, 300), rotated, 12);
-        ScanPoint scan5 = generateScanPoint(new Vector(250, 300), rotated.rotate2D((float) Math.PI / 4), 12);
+        ScanPoint scan5 = generateScanPoint(new Vector(250, 300), rotated.rotate2D((float) (6 * Math.PI / 9)), 12);
         this.scanToMatch = appendScanPoints(scan4, scan5);
         this.scanBeingMatched = new ScanPoint(this.scanToMatch);
     }
@@ -109,17 +109,15 @@ public class MatcherVisualizer extends PApplet{
 
         // do a single scan match and calculate the error
         ScanMatcher matcher = new ScanMatcher();
-        matcher.calculateRotationAndTranslationMatrices(this.referenceScan, this.scanBeingMatched);
+//        matcher.calculateRotationAndTranslationMatrices(this.referenceScan, this.scanBeingMatched);
         this.scanBeingMatched = matcher.applyRotationAndTranslationMatrices(this.scanBeingMatched);
         float singleScanMatchError = matcher.getError(this.referenceScan, this.scanBeingMatched);
-        delayMillis(10);
+        float error = matcher.getError(this.referenceScan, this.scanBeingMatched);
         drawScan(this.scanBeingMatched, blue);
 
         // do an iterative scan match and calculate the error
 //        ScanPoint matchedScan = matcher.iterativeScanMatch(scan1, scan2, 0.01f, 10);
 
 //        float iterativeScanMatchError = matcher.getError(scan1, matchedScan);
-        float x = 10+10;
-        float y = x+10;
     }
 }

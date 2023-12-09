@@ -94,16 +94,17 @@ class ScanMatcherTest{
 
     @Test
     public void iterativeScanMatch() {
+        float bendAngle = (float) (5 * Math.PI / 9);
         // generate two scans rotated by 45 degrees and append them together
         ScanPoint scan1 = generateScanPoint(new Vector(0, 0), new Vector(10, 10), 12);
-        ScanPoint scan2 = generateScanPoint(new Vector(0, 0), new Vector(10, 10).rotate2D((float) Math.PI / 4), 12);
+        ScanPoint scan2 = generateScanPoint(new Vector(0, 0), new Vector(10, 10).rotate2D(bendAngle), 12);
         ScanPoint scan3 = appendScanPoints(scan1, scan2);
 
 
         // generate two scans offset by some amount and rotated by 55 degrees and append them together
         Vector rotated = (new Vector(10, 10)).rotate2D((float) Math.PI);
         ScanPoint scan4 = generateScanPoint(new Vector(10, 10), rotated, 12);
-        ScanPoint scan5 = generateScanPoint(new Vector(10, 10), rotated.rotate2D((float) Math.PI / 4), 12);
+        ScanPoint scan5 = generateScanPoint(new Vector(10, 10), rotated.rotate2D(bendAngle), 12);
         ScanPoint scan6 = appendScanPoints(scan4, scan5);
 
 
@@ -115,7 +116,7 @@ class ScanMatcherTest{
 
 
         // do an iterative scan match and calculate the error
-        ScanPoint matchedScan = matcher.iterativeScanMatch(scan1, scan2, 0.01f, 10);
+        ScanPoint matchedScan = matcher.iterativeScanMatch(scan1, scan2, 0.0001f, 10);
 
         // if it's null something has gone wrong with the algorithm because these scans can easily be matched.
         assertNotNull(matchedScan);
