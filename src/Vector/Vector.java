@@ -24,6 +24,17 @@ public class Vector {
         this.z = z;
     }
 
+    public Vector(double x, double y){
+        this.x = (float)x;
+        this.y = (float)y;
+    }
+
+    public Vector(double x, double y, double z){
+        this.x = (float)x;
+        this.y = (float)y;
+        this.z = (float)z;
+    }
+
     public Vector(SimpleMatrix matrix){
         // initialize x,y if matrix is 2x1 and x,y,z if matrix is 3x1
         if(matrix.getNumRows() == 2){

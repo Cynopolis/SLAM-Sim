@@ -8,50 +8,40 @@ import processing.core.PApplet;
 
 import static java.lang.Math.PI;
 
-public class ScanEdge extends Edge implements LineInterface {
-
-    protected ScanPoint vStart;
-    protected ScanPoint vEnd;
+public class ScanEdge extends Edge {
     protected Line line;
+
+    // Additional properties specific to scan edges
+    private boolean isLoopClosure = false;
+
+    /**
+     * @brief Constructor for a scan edge
+     * @param vStart the starting vertex
+     * @param vEnd   the ending vertex
+     */
     public ScanEdge(ScanPoint vStart, ScanPoint vEnd){
         super(vStart, vEnd);
-        this.vStart = vStart;
-        this.vEnd = vEnd;
 
         this.line = new Line(vStart.getPos(), vEnd.getPos());
     }
 
-    public Vector getDirection(){
-        return line.getDirection();
+    /**
+     * @brief Constructor for a scan edge
+     * @param vStart the starting vertex
+     * @param vEnd   the ending vertex
+     * @param weight the weight of the edge
+     */
+    public ScanEdge(ScanPoint vStart, ScanPoint vEnd, float weight) {
+        super(vStart, vEnd, weight);
+        this.line = new Line(vStart.getPos(), vEnd.getPos());
     }
 
-    public Vector getPosition(){
-        return line.getPosition();
+    // Getter and setter for loop closure flag
+    public boolean isLoopClosure() {
+        return isLoopClosure;
     }
 
-    public float getLength(){
-        return line.getLength();
-    }
-
-    public float getAngle(){
-        return line.getAngle();
-    }
-
-    public Vector endPoint(){
-        return line.endPoint();
-    }
-
-    public float getDistance(Vector point){
-        return line.getDistance(point);
-    }
-
-    public void draw(PApplet proc){
-        line.draw(proc);
-        Vector leftFlange = line.getDirection().rotate2D((float)(-3*PI/4)).normalize().mul(20);
-        Vector rightFlange = line.getDirection().rotate2D((float) (3*PI/4)).normalize().mul(20);
-        Line l1 = new Line(line.endPoint(), line.endPoint().add(leftFlange));
-        Line l2 = new Line(line.endPoint(), line.endPoint().add(rightFlange));
-        l1.draw(proc);
-        l2.draw(proc);
+    public void setLoopClosure(boolean loopClosure) {
+        isLoopClosure = loopClosure;
     }
 }

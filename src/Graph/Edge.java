@@ -10,7 +10,7 @@ public class Edge {
      * @param vEnd the vertex the edge ends at
      * @param weight the weight of the edge
      */
-    Edge(Vertex vStart, Vertex vEnd, float weight){
+    public Edge(Vertex vStart, Vertex vEnd, float weight){
         this.vStart = vStart;
         this.vEnd = vEnd;
         this.weight = weight;
@@ -20,7 +20,7 @@ public class Edge {
      * @param vStart the vertex the edge starts at
      * @param vEnd the vertex the edge ends at
      */
-    protected Edge(Vertex vStart, Vertex vEnd){
+    public Edge(Vertex vStart, Vertex vEnd){
         this.vStart = vStart;
         this.vEnd = vEnd;
     }

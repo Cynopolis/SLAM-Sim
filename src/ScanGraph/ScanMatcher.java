@@ -134,6 +134,7 @@ public class ScanMatcher{
                 tempScan.getPoints().set(i, new Vector((float) newPointMatrix.get(0), (float) newPointMatrix.get(1)));
             }
         }
+        newScan.UpdatePose(rotationMatrix, translationVector);
         return tempScan;
     }
 
