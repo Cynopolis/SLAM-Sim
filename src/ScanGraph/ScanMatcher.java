@@ -108,10 +108,25 @@ public class ScanMatcher{
         SimpleMatrix crossCovarianceMatrixSimple = crossCovarianceMatrix(referenceScan, newScan, correspondenceMatrix);
         SimpleSVD<SimpleMatrix> svd = crossCovarianceMatrixSimple.svd();
         this.rotationMatrix = svd.getU().mult(svd.getV().transpose());
+        // calculate what the angle of the rotation matrix is
+        float angle = (float) Math.atan2(this.rotationMatrix.get(1, 0), this.rotationMatrix.get(0, 0));
+        // scale the angle by a small amount to make the rotation matrix more accurate
+        angle*= 1.75F;
+        this.rotationMatrix = new SimpleMatrix(new double[][]{{Math.cos(angle), -Math.sin(angle)}, {Math.sin(angle), Math.cos(angle)}});
 
-        SimpleMatrix newScanAveragePosition = this.averageScanPosition(newScan);
-        SimpleMatrix referenceScanAveragePosition = this.averageScanPosition(referenceScan);
-        this.translationVector = referenceScanAveragePosition.minus(rotationMatrix.mult(newScanAveragePosition));
+        // percentage of the local position to use in the translation calculation
+        double weightedAverage = 0.9;
+
+        SimpleMatrix localNewScanAveragePosition = new SimpleMatrix(correspondenceMatrix.getAverageNewPosition().toArray());//this.averageScanPosition(newScan);
+        SimpleMatrix globalNewScanAveragePosition = new SimpleMatrix(this.averageScanPosition(newScan));
+        SimpleMatrix weightedAverageNewScanPostion = localNewScanAveragePosition.scale(weightedAverage).plus(globalNewScanAveragePosition.scale(1-weightedAverage));
+
+        SimpleMatrix localReferenceScanAveragePosition = new SimpleMatrix(correspondenceMatrix.getAverageOldPosition().toArray()); //this.averageScanPosition(referenceScan);
+        SimpleMatrix globalReferenceScanAveragePosition = new SimpleMatrix(this.averageScanPosition(referenceScan));
+        SimpleMatrix weightedAverageReferenceScanPostion = localReferenceScanAveragePosition.scale(weightedAverage).plus(globalReferenceScanAveragePosition.scale(1-weightedAverage));
+
+
+        this.translationVector = weightedAverageReferenceScanPostion.minus(rotationMatrix.mult(weightedAverageNewScanPostion));
     }
 
     public SimpleMatrix getRotationMatrix(){
@@ -264,27 +279,23 @@ class CorrespondenceMatrix{
 
             // if we find a closest point...
             if (closestIndex != -1) {
-//                // check if the oldPointIndex is already in the list of oldPointIndices
-//                if(this.oldPointIndices.contains(closestIndex)){
-//                    int index = this.oldPointIndices.indexOf(closestIndex);
-//                    // if the index is already in our list, then we need to check if the new point is closer than the old point
-//                    if(this.distances.get(index) > closestDistance){
-//                        // if the new point is closer than the old point, then we need to replace the old point with the new point
-//                        this.oldPointIndices.set(index, closestIndex);
-//                        this.newPointIndices.set(index, newPointIndex);
-//                        this.distances.set(index, closestDistance);
-//                    }
-//                }
-//                // if the index is not in our list, then we need to add it
-//                else{
-//                    this.oldPointIndices.add(closestIndex);
-//                    this.newPointIndices.add(newPointIndex);
-//                    this.distances.add(closestDistance);
-//                }
+                // check if the oldPointIndex is already in the list of oldPointIndices
+                if(this.oldPointIndices.contains(closestIndex)){
+                    int index = this.oldPointIndices.indexOf(closestIndex);
+                    // if the index is already in our list, then we need to check if the new point is closer than the old point
+                    if(this.distances.get(index) > closestDistance){
+                        // if the new point is closer than the old point, then we need to replace the old point with the new point
+                        this.oldPointIndices.set(index, closestIndex);
+                        this.newPointIndices.set(index, newPointIndex);
+                        this.distances.set(index, closestDistance);
+                    }
+                }
+                // if the index is not in our list, then we need to add it
+                else{
                     this.oldPointIndices.add(closestIndex);
                     this.newPointIndices.add(newPointIndex);
                     this.distances.add(closestDistance);
-
+                }
             }
         }
     }

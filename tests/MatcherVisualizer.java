@@ -19,18 +19,29 @@ public class MatcherVisualizer extends PApplet{
     public void settings(){
         processing = this;
         size(1000, 1000);
+        float connectingAngle = (float) (3 * Math.PI / 9);
 
         // generate two scans rotated by 45 degrees and append them together
         Vector descriptor = new Vector(200, 200);
-        ScanPoint scan1 = generateScanPoint(new Vector(500, 500), descriptor, 12);
-        ScanPoint scan2 = generateScanPoint(new Vector(500, 500), descriptor.rotate2D((float) (6 * Math.PI / 9)), 12);
+        Vector position = new Vector(500, 500);
+        ScanPoint scan1 = generateScanPoint(position, descriptor, 12);
+        ScanPoint scan2 = generateScanPoint(position, descriptor.rotate2D(connectingAngle), 12);
+        Vector p1 = scan1.getPoints().get(11);
+        Vector p2 = scan2.getPoints().get(11);
+        ScanPoint scan3 = generateScanPoint(p1, p2.sub(p1), 12);
         this.referenceScan = appendScanPoints(scan1, scan2);
+        this.referenceScan = appendScanPoints(this.referenceScan, scan3);
 
         // generate two scans offset by some amount and rotated by 55 degrees and append them together
         Vector rotated = descriptor.rotate2D((float) Math.PI);
-        ScanPoint scan4 = generateScanPoint(new Vector(250, 300), rotated, 12);
-        ScanPoint scan5 = generateScanPoint(new Vector(250, 300), rotated.rotate2D((float) (6 * Math.PI / 9)), 12);
+        Vector offset = new Vector(100, 150);
+        ScanPoint scan4 = generateScanPoint(position.add(offset), rotated, 12);
+        ScanPoint scan5 = generateScanPoint(position.add(offset), rotated.rotate2D(connectingAngle), 12);
+        p1 = scan4.getPoints().get(11);
+        p2 = scan5.getPoints().get(11);
+        ScanPoint scan6 = generateScanPoint(p1, p2.sub(p1), 12);
         this.scanToMatch = appendScanPoints(scan4, scan5);
+        this.scanToMatch = appendScanPoints(this.scanToMatch, scan6);
         this.scanBeingMatched = new ScanPoint(this.scanToMatch);
     }
     public void draw(){
@@ -71,15 +82,6 @@ public class MatcherVisualizer extends PApplet{
         return new ScanPoint(new Vector(0, 0), 0, points);
     }
 
-    public void delayMillis(long millis){
-        // get the current time
-        long start = System.currentTimeMillis();
-        long end = start + millis;
-        while(System.currentTimeMillis() < end){
-            // do nothing
-        }
-    }
-
     /**
      * @brief Draw a scan point to the screen
      * @param scan The scan point to draw
@@ -104,14 +106,12 @@ public class MatcherVisualizer extends PApplet{
 
 
         drawScan(this.referenceScan, red);
-        delayMillis(10);
         drawScan(this.scanToMatch, green);
 
         // do a single scan match and calculate the error
         ScanMatcher matcher = new ScanMatcher();
-//        matcher.calculateRotationAndTranslationMatrices(this.referenceScan, this.scanBeingMatched);
+        matcher.calculateRotationAndTranslationMatrices(this.referenceScan, this.scanBeingMatched);
         this.scanBeingMatched = matcher.applyRotationAndTranslationMatrices(this.scanBeingMatched);
-        float singleScanMatchError = matcher.getError(this.referenceScan, this.scanBeingMatched);
         float error = matcher.getError(this.referenceScan, this.scanBeingMatched);
         drawScan(this.scanBeingMatched, blue);
 
