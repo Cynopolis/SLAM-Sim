@@ -3,6 +3,9 @@ import java.util.ArrayList;
 import static java.lang.Math.PI;
 import static processing.core.PApplet.degrees;
 import static processing.core.PApplet.radians;
+
+import Graph.*;
+import Vector.Vector;
 import processing.core.PApplet;
 
 public class Car{
@@ -35,22 +38,21 @@ public class Car{
     }
 
     //draw the car and its views
-    public void drawCar(ArrayList<Wall> walls){
+    public void drawCar(PointGraph map, boolean SLAMIsHidden){
         proc.stroke(255);
         proc.ellipse(pose.x, pose.y, carWidth, carLength);
-        this.updateScan(walls);
-        this.slam.drawLines();
+        this.updateScan(map);
+        if(!SLAMIsHidden){
+            this.slam.drawFeatures(proc);
+        }
     }
 
     //With all the views that the car has, get their point list
-    void updateScan(ArrayList<Wall> walls){
+    void updateScan(PointGraph map){
         for(View view : views){
-            view.look(walls);
-        }
+            view.calculatePointScan(map);
+            slam.RANSAC(view);
 
-        for(View view : views){
-            ArrayList<Vector> pointList = view.getPoints();
-            slam.RANSAC(pointList, view.getFOV() / view.getRayNum());
         }
     }
 
